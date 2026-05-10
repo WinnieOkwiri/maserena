@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maserena — About</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --sand:      #EDE5D8;
+  --sand-mid:  #D9CBBA;
+  --sand-deep: #C9B49A;
+  --ember:     #1F0C04;
+  --ember-mid: #3D1A0A;
+  --ember-soft:#6B3420;
+  --ember-faint:rgba(31,12,4,0.06);
+  --grad-bg: linear-gradient(168deg, #EDE5D8 0%, #E2D4C0 35%, #D0BC9E 70%, #C9B49A 100%);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--sand);
+  color: var(--ember);
+  overflow-x: hidden;
+}
+
+/* ─── SCROLL CONTAINER ─── */
+.page {
+  background: var(--grad-bg);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grain overlay */
+.page::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.03; pointer-events:none; z-index:0;
+}
+
+/* Ambient blobs */
+.blob { position:fixed; border-radius:50%; filter:blur(100px); pointer-events:none; z-index:0; }
+.blob-a {
+  width:600px; height:600px;
+  background: radial-gradient(circle, rgba(180,115,60,0.18) 0%, transparent 70%);
+  top:-150px; right:-150px;
+  animation: bf1 16s ease-in-out infinite;
+}
+.blob-b {
+  width:450px; height:450px;
+  background: radial-gradient(circle, rgba(31,12,4,0.07) 0%, transparent 70%);
+  bottom:-100px; left:-100px;
+  animation: bf2 20s ease-in-out infinite;
+}
+@keyframes bf1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,30px)} }
+@keyframes bf2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-40px)} }
+
+/* ─── NAVBAR ─── */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  display: flex; justify-content:space-between; align-items:center;
+  padding: 24px 56px;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(237,229,216,0.9) 0%, transparent 100%);
+  backdrop-filter: blur(8px);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 400;
+  letter-spacing: 8px; color: var(--ember);
+  text-transform: uppercase; text-decoration: none;
+}
+.nav-links { display:flex; gap:32px; list-style:none; }
+.nav-links a {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 2.5px;
+  color: rgba(31,12,4,0.45); text-decoration:none;
+  text-transform: uppercase; transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--ember); }
+.nav-cta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 9px 22px; border-radius: 2px;
+  border: 1px solid rgba(31,12,4,0.3);
+  color: var(--ember); background: transparent;
+  cursor: pointer; transition: all 0.25s;
+}
+.nav-cta:hover { background: var(--ember); color: var(--sand); }
+
+/* ─── SECTION WRAPPER ─── */
+section {
+  position: relative; z-index: 1;
+  padding: 0 56px;
+}
+
+/* ─── INTRO BLOCK ─── */
+.intro {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 80px;
+  padding-top: 120px;
+  padding-bottom: 80px;
+}
+
+.intro-left { position: relative; }
+
+.section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; letter-spacing: 5px;
+  color: var(--ember-soft); text-transform: uppercase;
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 16px;
+  opacity: 0; transform: translateX(-20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section-label.visible { opacity:1; transform:translateX(0); }
+.section-label::before {
+  content:'';
+  display: block; width: 32px; height: 1px;
+  background: var(--ember-soft); opacity: 0.5;
+}
+
+.intro-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 300; line-height: 1.05;
+  color: var(--ember); letter-spacing: 2px;
+  margin-bottom: 32px;
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.9s ease 0.15s, transform 0.9s ease 0.15s;
+}
+.intro-heading.visible { opacity:1; transform:translateY(0); }
+.intro-heading em { font-style: italic; font-weight: 300; }
+
+.intro-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 300;
+  line-height: 1.85; color: var(--ember-mid);
+  opacity: 0.8; max-width: 480px;
+  margin-bottom: 44px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+}
+.intro-body.visible { opacity:0.8; transform:translateY(0); }
+
+.intro-sig {
+  opacity: 0; transform: translateY(15px);
+  transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
+}
+.intro-sig.visible { opacity:1; transform:translateY(0); }
+.sig-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 400; font-style: italic;
+  color: var(--ember); letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.sig-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 2.5px;
+  color: rgba(31,12,4,0.4); text-transform: uppercase;
+}
+
+/* Right side — founder visual */
+.intro-right {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.founder-frame {
+  width: 100%; max-width: 420px;
+  aspect-ratio: 3/4;
+  position: relative;
+  opacity: 0; transform: translateY(30px) scale(0.97);
+  transition: opacity 1s ease 0.2s, transform 1s ease 0.2s;
+}
+.founder-frame.visible { opacity:1; transform:translateY(0) scale(1); }
+
+.frame-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(145deg, #C9B49A 0%, #B89A7A 50%, #A07858 100%);
+  border-radius: 3px;
+}
+.frame-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(31,12,4,0.6) 100%);
+  border-radius: 3px;
+}
+.frame-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+}
+.frame-icon {
+  width: 56px; height: 56px;
+  border: 1px solid rgba(237,229,216,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.frame-icon svg { opacity: 0.4; }
+.frame-hint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 2px;
+  color: rgba(237,229,216,0.4); text-transform: uppercase;
+  text-align: center; padding: 0 32px;
+}
+.frame-caption {
+  position: absolute; bottom: 24px; left: 24px; right: 24px;
+}
+.frame-caption-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400; font-style: italic;
+  color: rgba(237,229,216,0.9); letter-spacing: 2px;
+  margin-bottom: 2px;
+}
+.frame-caption-role {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; letter-spacing: 3px;
+  color: rgba(237,229,216,0.5); text-transform: uppercase;
+}
+
+/* Corner decoration */
+.frame-corner {
+  position: absolute; width: 24px; height: 24px;
+  pointer-events: none;
+}
+.frame-corner::before, .frame-corner::after {
+  content:''; position: absolute;
+  background: rgba(237,229,216,0.35);
+}
+.frame-corner::before { width:1px; height:100%; }
+.frame-corner::after { width:100%; height:1px; }
+.fc-tl { top:-8px; left:-8px; }
+.fc-tl::before { top:0; left:0; }
+.fc-tl::after { top:0; left:0; }
+.fc-br { bottom:-8px; right:-8px; }
+.fc-br::before { bottom:0; right:0; }
+.fc-br::after { bottom:0; right:0; }
+
+/* ─── DIVIDER ─── */
+.section-divider {
+  display: flex; align-items: center; gap: 24px;
+  padding: 0 0 80px;
+  opacity: 0; transition: opacity 0.6s ease;
+}
+.section-divider.visible { opacity:1; }
+.div-line { flex:1; height:0.5px; background: rgba(31,12,4,0.12); }
+.div-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; font-style: italic;
+  color: rgba(31,12,4,0.3); letter-spacing: 3px;
+}
+
+/* ─── STATS STRIP ─── */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(31,12,4,0.1);
+  border: 0.5px solid rgba(31,12,4,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 100px;
+}
+.stat-cell {
+  background: rgba(237,229,216,0.6);
+  padding: 40px 32px;
+  display: flex; flex-direction: column;
+  align-items: flex-start; gap: 8px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  backdrop-filter: blur(4px);
+}
+.stat-cell.visible { opacity:1; transform:translateY(0); }
+.stat-cell:nth-child(1) { transition-delay: 0s; }
+.stat-cell:nth-child(2) { transition-delay: 0.1s; }
+.stat-cell:nth-child(3) { transition-delay: 0.2s; }
+.stat-cell:nth-child(4) { transition-delay: 0.3s; }
+.stat-cell:hover { background: rgba(237,229,216,0.85); }
+
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 56px; font-weight: 300;
+  color: var(--ember); line-height: 1;
+  letter-spacing: -1px;
+}
+.stat-number span {
+  font-size: 28px; font-weight: 300;
+  vertical-align: super; margin-left: 2px;
+}
+.stat-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 2.5px;
+  color: rgba(31,12,4,0.45); text-transform: uppercase;
+  line-height: 1.6;
+}
+.stat-edit-hint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; color: rgba(31,12,4,0.25);
+  letter-spacing: 1px; margin-top: 4px;
+  font-style: italic;
+}
+
+/* ─── VALUES GRID ─── */
+.values-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px; align-items: start;
+  margin-bottom: 56px;
+}
+.values-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; letter-spacing: 5px;
+  color: var(--ember-soft); text-transform: uppercase;
+  padding-top: 8px;
+  opacity: 0; transform: translateX(-15px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.values-label.visible { opacity:1; transform:translateX(0); }
+.values-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 300; line-height: 1.15;
+  color: var(--ember); letter-spacing: 1px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+}
+.values-heading.visible { opacity:1; transform:translateY(0); }
+.values-heading em { font-style: italic; }
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(31,12,4,0.08);
+  border: 0.5px solid rgba(31,12,4,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 100px;
+}
+.value-card {
+  background: rgba(237,229,216,0.5);
+  padding: 44px 36px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease, background 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+.value-card.visible { opacity:1; transform:translateY(0); }
+.value-card:nth-child(1) { transition-delay:0s; }
+.value-card:nth-child(2) { transition-delay:0.1s; }
+.value-card:nth-child(3) { transition-delay:0.2s; }
+.value-card:nth-child(4) { transition-delay:0.15s; }
+.value-card:nth-child(5) { transition-delay:0.25s; }
+.value-card:nth-child(6) { transition-delay:0.35s; }
+.value-card:hover { background: rgba(237,229,216,0.8); }
+
+.value-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; font-weight: 300;
+  color: rgba(31,12,4,0.2); letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+.value-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 400;
+  color: var(--ember); letter-spacing: 1px;
+  margin-bottom: 14px; line-height: 1.1;
+}
+.value-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 300;
+  line-height: 1.75; color: rgba(31,12,4,0.6);
+}
+/* Decorative line on hover */
+.value-card::after {
+  content:''; position:absolute;
+  bottom:0; left:0; right:0; height:2px;
+  background: var(--ember-soft);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.value-card:hover::after { transform: scaleX(1); }
+
+/* ─── MISSION STATEMENT ─── */
+.mission-block {
+  padding: 100px 0;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  position: relative;
+}
+.mission-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4.5vw, 58px);
+  font-weight: 300; font-style: italic;
+  line-height: 1.25; letter-spacing: 1px;
+  color: var(--ember); max-width: 900px;
+  margin: 0 auto 40px;
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.mission-quote.visible { opacity:1; transform:translateY(0); }
+.mission-rule {
+  width: 0; height: 1px;
+  background: rgba(31,12,4,0.2);
+  margin: 0 auto 28px;
+  transition: width 1.2s ease 0.3s;
+}
+.mission-rule.visible { width: 80px; }
+.mission-attr {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 4px;
+  color: rgba(31,12,4,0.35); text-transform: uppercase;
+  opacity: 0; transition: opacity 0.7s ease 0.8s;
+}
+.mission-attr.visible { opacity:1; }
+
+/* ─── REACH SECTION ─── */
+.reach-block {
+  padding-bottom: 120px;
+}
+.reach-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+  margin-bottom: 64px;
+}
+.reach-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 300; color: var(--ember);
+  line-height: 1.05; letter-spacing: 1px;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reach-heading.visible { opacity:1; transform:translateY(0); }
+.reach-heading em { font-style: italic; }
+.reach-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 300;
+  line-height: 1.85; color: rgba(31,12,4,0.65);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.8s ease 0.15s, transform 0.8s ease 0.15s;
+}
+.reach-body.visible { opacity:1; transform:translateY(0); }
+
+/* World regions */
+.regions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.region-card {
+  border: 0.5px solid rgba(31,12,4,0.12);
+  border-radius: 3px; padding: 32px 28px;
+  background: rgba(237,229,216,0.4);
+  position: relative; overflow: hidden;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s;
+  backdrop-filter: blur(4px);
+  cursor: default;
+}
+.region-card.visible { opacity:1; transform:translateY(0); }
+.region-card:nth-child(1) { transition-delay:0s; }
+.region-card:nth-child(2) { transition-delay:0.1s; }
+.region-card:nth-child(3) { transition-delay:0.2s; }
+.region-card:hover { background: rgba(237,229,216,0.7); }
+.region-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ember-soft); margin-bottom: 20px;
+  position: relative;
+}
+.region-dot::after {
+  content:''; position:absolute;
+  inset:-5px; border-radius:50%;
+  border: 0.5px solid rgba(107,52,32,0.3);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:0.5} 50%{transform:scale(1.5);opacity:0} }
+.region-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 400;
+  color: var(--ember); letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.region-markets {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; letter-spacing: 1.5px;
+  color: rgba(31,12,4,0.45); line-height: 1.7;
+}
+.region-edit {
+  font-size: 10px; color: rgba(31,12,4,0.2);
+  font-style: italic; margin-top: 8px;
+}
+
+/* ─── FOOTER CTA ─── */
+.about-cta {
+  padding: 80px 0 120px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 32px;
+}
+.cta-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 300; font-style: italic;
+  color: var(--ember); letter-spacing: 2px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.cta-heading.visible { opacity:1; transform:translateY(0); }
+.cta-btns {
+  display: flex; gap: 14px;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+}
+.cta-btns.visible { opacity:1; transform:translateY(0); }
+.btn-primary {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 15px 44px; background: var(--ember);
+  color: var(--sand); border: none; border-radius: 2px;
+  cursor: pointer; transition: all 0.25s;
+}
+.btn-primary:hover { background: var(--ember-mid); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(31,12,4,0.18); }
+.btn-secondary {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 15px 44px; background: transparent;
+  color: var(--ember); border: 1px solid rgba(31,12,4,0.25);
+  border-radius: 2px; cursor: pointer; transition: all 0.25s;
+}
+.btn-secondary:hover { border-color: var(--ember); transform: translateY(-2px); }
+
+/* ─── PARALLAX LAYERS ─── */
+.parallax-word {
+  position: fixed; pointer-events: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22vw; font-weight: 300;
+  color: rgba(31,12,4,0.025);
+  letter-spacing: 8px; text-transform: uppercase;
+  white-space: nowrap; z-index: 0;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/* Custom cursor */
+.cursor { width:7px; height:7px; background:var(--ember); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; mix-blend-mode:multiply; transition:transform 0.1s; }
+.cursor-ring { width:28px; height:28px; border:1px solid rgba(31,12,4,0.25); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transition:width 0.3s, height 0.3s; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav { padding: 20px 24px; }
+  .nav-links { display: none; }
+  section { padding: 0 24px; }
+  .intro { grid-template-columns: 1fr; gap: 40px; padding-top: 100px; }
+  .intro-right { order: -1; }
+  .stats-strip { grid-template-columns: repeat(2,1fr); }
+  .values-grid { grid-template-columns: 1fr 1fr; }
+  .values-header { grid-template-columns: 1fr; gap: 20px; }
+  .reach-header { grid-template-columns: 1fr; gap: 24px; }
+  .regions-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<div class="blob blob-a"></div>
+<div class="blob blob-b"></div>
+<div class="parallax-word" id="pword">Maserena</div>
+
+<div class="page">
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="#" class="nav-logo">Maserena</a>
+    <ul class="nav-links">
+      <li><a href="maserena-about.html" class="active">About</a></li>
+      <li><a href="maserena-catalogue.html">Catalogue</a></li>
+      <li><a href="maserena-order.html">Order</a></li>
+      <li><a href="maserena-events.html">Events</a></li>
+      <li><a href="maserena-contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-cta">Partner with us</button>
+  </nav>
+
+  <!-- ── INTRO ── -->
+  <section>
+    <div class="intro">
+      <div class="intro-left">
+        <div class="section-label reveal">02 — Our Story</div>
+
+        <h1 class="intro-heading reveal">
+          Built on integrity.<br>
+          <em>Driven by a love</em><br>
+          for great spirits.
+        </h1>
+
+        <p class="intro-body reveal">
+          <!-- REPLACE: Your company story in 2–3 sentences. When was Maserena founded, what drove it, what makes it different. -->
+          Maserena was founded on a simple belief — that the world's finest spirits, wines and beers deserve to reach every corner of the globe, handled with the same care and discipline that went into making them. From our roots in East Africa to markets across three continents, we have built every relationship on trust, transparency and an uncompromising commitment to quality.
+        </p>
+
+        <div class="intro-sig reveal">
+          <div class="sig-name">
+            <!-- REPLACE: Founder's name -->
+            [Founder Name]
+          </div>
+          <div class="sig-title">Founder & Managing Director, Maserena</div>
+        </div>
+      </div>
+
+      <div class="intro-right">
+        <div class="founder-frame reveal">
+          <div class="frame-bg"></div>
+          <div class="frame-overlay"></div>
+          <div class="frame-placeholder">
+            <div class="frame-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="rgba(237,229,216,0.6)" stroke-width="1"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="rgba(237,229,216,0.6)" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="frame-hint">Add founder photo here</div>
+          </div>
+          <div class="frame-caption">
+            <div class="frame-caption-name">
+              <!-- REPLACE: Founder's name -->
+              [Founder Name]
+            </div>
+            <div class="frame-caption-role">Founder · Maserena</div>
+          </div>
+          <div class="frame-corner fc-tl"></div>
+          <div class="frame-corner fc-br"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="section-divider reveal">
+      <div class="div-line"></div>
+      <div class="div-mark">Est. [Year] · East Africa</div>
+      <div class="div-line"></div>
+    </div>
+
+    <!-- ── STATS STRIP ── -->
+    <div class="stats-strip">
+      <div class="stat-cell reveal">
+        <div class="stat-number">
+          <!-- REPLACE: Years in business -->
+          00<span>+</span>
+        </div>
+        <div class="stat-desc">Years in<br>Business</div>
+        <div class="stat-edit-hint">Replace 00 with actual years</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-number">
+          <!-- REPLACE: Number of brands carried -->
+          000<span>+</span>
+        </div>
+        <div class="stat-desc">Premium Brands<br>in Portfolio</div>
+        <div class="stat-edit-hint">Replace 000 with brand count</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-number">
+          <!-- REPLACE: Number of markets/countries -->
+          00<span>+</span>
+        </div>
+        <div class="stat-desc">Markets<br>Served</div>
+        <div class="stat-edit-hint">Replace 00 with market count</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-number">
+          <!-- REPLACE: e.g. volume, orders, etc -->
+          3
+        </div>
+        <div class="stat-desc">Continents<br>Reached</div>
+        <div class="stat-edit-hint">Update if reach expands</div>
+      </div>
+    </div>
+
+    <!-- ── VALUES ── -->
+    <div class="values-header">
+      <div class="values-label reveal">What we stand for</div>
+      <h2 class="values-heading reveal">
+        The principles that guide<br>
+        <em>every decision we make</em>
+      </h2>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-card reveal">
+        <div class="value-num">01</div>
+        <div class="value-title">Integrity</div>
+        <div class="value-body">Every partnership, every shipment, every conversation is handled with complete honesty. We say what we mean and deliver what we promise.</div>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-num">02</div>
+        <div class="value-title">Discipline</div>
+        <div class="value-body">Excellence is not accidental. We maintain rigorous standards across every category we carry and every market we operate in.</div>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-num">03</div>
+        <div class="value-title">Warmth</div>
+        <div class="value-body">Business is built on relationships. We treat every partner — large or small — with genuine care, respect and a long-term perspective.</div>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-num">04</div>
+        <div class="value-title">Quality</div>
+        <div class="value-body">We carry only what we believe in. Every brand in the Maserena portfolio has been selected for its craft, character and consistency.</div>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-num">05</div>
+        <div class="value-title">Hard work</div>
+        <div class="value-body">There are no shortcuts in distribution. We show up every day, go the extra mile, and take pride in doing things properly from the ground up.</div>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-num">06</div>
+        <div class="value-title">Global vision</div>
+        <div class="value-body">We think beyond borders. Maserena connects producers and markets across continents, creating opportunities that transcend geography.</div>
+      </div>
+    </div>
+
+    <!-- ── MISSION STATEMENT ── -->
+    <div class="mission-block">
+      <div class="mission-rule reveal" id="mrule"></div>
+      <blockquote class="mission-quote reveal">
+        <!-- REPLACE: Your mission statement in one powerful sentence -->
+        "To bring the world's finest spirits to every table — with integrity, with discipline, and with love."
+      </blockquote>
+      <div class="mission-rule reveal" id="mrule2"></div>
+      <div class="mission-attr reveal">Maserena · Mission Statement</div>
+    </div>
+
+    <!-- ── GLOBAL REACH ── -->
+    <div class="reach-block">
+      <div class="reach-header">
+        <h2 class="reach-heading reveal">
+          A global network.<br>
+          <em>Built one relationship</em><br>
+          at a time.
+        </h2>
+        <p class="reach-body reveal">
+          <!-- REPLACE: Describe your actual distribution reach and key markets -->
+          From East Africa outward, Maserena has built a distribution network that spans three continents. Our reach is not just geographic — it is relational. Every market we enter, we enter with a partner who shares our values and our standards.
+        </p>
+      </div>
+
+      <div class="regions-grid">
+        <div class="region-card reveal">
+          <div class="region-dot"></div>
+          <div class="region-name">Africa</div>
+          <div class="region-markets">
+            <!-- REPLACE: List actual African markets -->
+            Kenya · Uganda · Tanzania<br>
+            Rwanda · [Add markets]
+          </div>
+          <div class="region-edit">Update with your actual markets</div>
+        </div>
+        <div class="region-card reveal">
+          <div class="region-dot"></div>
+          <div class="region-name">Europe</div>
+          <div class="region-markets">
+            <!-- REPLACE: List actual European markets -->
+            [Market] · [Market]<br>
+            [Add markets served]
+          </div>
+          <div class="region-edit">Update with your actual markets</div>
+        </div>
+        <div class="region-card reveal">
+          <div class="region-dot"></div>
+          <div class="region-name">Asia</div>
+          <div class="region-markets">
+            <!-- REPLACE: List actual Asian markets -->
+            [Market] · [Market]<br>
+            [Add markets served]
+          </div>
+          <div class="region-edit">Update with your actual markets</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CTA ── -->
+    <div class="about-cta">
+      <h3 class="cta-heading reveal">Ready to explore our portfolio?</h3>
+      <div class="cta-btns reveal">
+        <a href="maserena-catalogue.html" class="btn-primary">View catalogue</a>
+        <a href="maserena-contact.html" class="btn-secondary">Get in touch</a>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<script>
+// ── Custom cursor ──
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('ring'); 
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx-3.5+'px'; cur.style.top=my-3.5+'px';
+});
+(function animR(){
+  rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
+  ring.style.left=rx-14+'px'; ring.style.top=ry-14+'px';
+  requestAnimationFrame(animR);
+})();
+document.querySelectorAll('button,a,.value-card,.region-card,.stat-cell').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ ring.style.width='44px'; ring.style.height='44px'; });
+  el.addEventListener('mouseleave',()=>{ ring.style.width='28px'; ring.style.height='28px'; });
+});
+
+// ── Parallax word ──
+const pword = document.getElementById('pword');
+window.addEventListener('scroll',()=>{
+  const y = window.scrollY;
+  pword.style.transform = `translate(-50%, calc(-50% + ${y * 0.18}px))`;
+});
+
+// ── Scroll reveal ──
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // Special case for rules
+      if(e.target.id === 'mrule' || e.target.id === 'mrule2'){
+        e.target.style.width = '80px';
+      }
+      io.unobserve(e.target);
+    }
+  });
+},{ threshold: 0.15, rootMargin:'0px 0px -40px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+// Trigger visible items on load
+setTimeout(()=>{
+  document.querySelectorAll('.reveal').forEach(el=>{
+    const rect = el.getBoundingClientRect();
+    if(rect.top < window.innerHeight * 0.9){
+      el.classList.add('visible');
+      if(el.id==='mrule'||el.id==='mrule2') el.style.width='80px';
+    }
+  });
+},100);
+</script>
+</body>
+</html>

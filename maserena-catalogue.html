@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maserena — Catalogue</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --sand:#EDE5D8; --sand-mid:#D9CBBA; --sand-deep:#C9B49A;
+  --ember:#1F0C04; --ember-mid:#3D1A0A; --ember-soft:#6B3420;
+  --border:rgba(31,12,4,0.12); --border-strong:rgba(31,12,4,0.28);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--ember);min-height:100vh;overflow-x:hidden;}
+
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.03;}
+
+.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+.blob-a{width:550px;height:550px;background:radial-gradient(circle,rgba(180,115,60,0.15) 0%,transparent 70%);top:-120px;right:-120px;animation:bf1 18s ease-in-out infinite;}
+.blob-b{width:400px;height:400px;background:radial-gradient(circle,rgba(31,12,4,0.06) 0%,transparent 70%);bottom:-80px;left:-80px;animation:bf2 22s ease-in-out infinite;}
+@keyframes bf1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+@keyframes bf2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:22px 56px;background:rgba(237,229,216,0.92);backdrop-filter:blur(14px);border-bottom:0.5px solid var(--border);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:8px;color:var(--ember);text-transform:uppercase;text-decoration:none;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2.5px;color:rgba(31,12,4,0.6);text-decoration:none;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--ember);font-weight:500;}
+.nav-cta{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:9px 22px;border-radius:2px;border:1px solid var(--border-strong);color:var(--ember);background:transparent;cursor:pointer;transition:all 0.25s;}
+.nav-cta:hover{background:var(--ember);color:var(--sand);}
+
+/* PAGE */
+.page{position:relative;z-index:1;padding-top:80px;}
+
+/* HEADER */
+.cat-header{padding:56px 56px 44px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;border-bottom:0.5px solid var(--border);}
+.cat-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:5px;color:var(--ember-soft);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.cat-label::before{content:'';display:block;width:28px;height:1px;background:var(--ember-soft);opacity:0.5;}
+.cat-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,68px);font-weight:300;color:var(--ember);letter-spacing:2px;line-height:1;}
+.cat-title em{font-style:italic;}
+.cat-count-box{text-align:right;padding-bottom:6px;}
+.cat-count-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--ember);line-height:1;display:block;}
+.cat-count-label{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;color:rgba(31,12,4,0.45);text-transform:uppercase;}
+
+/* FILTERS */
+.filter-section{padding:28px 56px;border-bottom:0.5px solid var(--border);position:sticky;top:72px;z-index:40;background:rgba(237,229,216,0.94);backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:18px;}
+.filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filter-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;color:rgba(31,12,4,0.45);text-transform:uppercase;min-width:72px;flex-shrink:0;}
+.filter-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.chip{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;padding:7px 15px;border-radius:2px;border:0.5px solid var(--border-strong);color:rgba(31,12,4,0.7);background:transparent;cursor:pointer;transition:all 0.2s ease;white-space:nowrap;}
+.chip:hover{border-color:var(--ember);color:var(--ember);}
+.chip.active{background:var(--ember);color:var(--sand);border-color:var(--ember);}
+
+.price-range{display:flex;align-items:center;gap:10px;}
+.price-input{font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 12px;width:100px;border:0.5px solid var(--border-strong);border-radius:2px;background:transparent;color:var(--ember);outline:none;transition:border-color 0.2s;}
+.price-input:focus{border-color:var(--ember);}
+.price-input::placeholder{color:rgba(31,12,4,0.35);}
+.price-sep{font-size:12px;color:rgba(31,12,4,0.4);}
+.price-apply{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:2px;background:var(--ember);color:var(--sand);border:none;cursor:pointer;transition:all 0.2s;}
+.price-apply:hover{background:var(--ember-mid);}
+
+.search-wrap{position:relative;}
+.search-input{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;padding:8px 38px 8px 14px;width:260px;border:0.5px solid var(--border-strong);border-radius:2px;background:transparent;color:var(--ember);outline:none;transition:border-color 0.2s,width 0.3s;}
+.search-input::placeholder{color:rgba(31,12,4,0.35);}
+.search-input:focus{border-color:var(--ember);width:300px;}
+.search-icon{position:absolute;right:11px;top:50%;transform:translateY(-50%);opacity:0.35;pointer-events:none;}
+
+.filter-actions{display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.results-label{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(31,12,4,0.5);letter-spacing:1px;}
+.clear-btn{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ember-soft);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color 0.2s;}
+.clear-btn:hover{color:var(--ember);}
+
+/* GRID */
+.grid-wrap{padding:44px 56px 100px;}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:2px;}
+
+/* CARD */
+.product-card{background:rgba(237,229,216,0.5);border:0.5px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:background 0.3s,transform 0.3s,box-shadow 0.3s;opacity:0;transform:translateY(20px);animation:cardIn 0.5s ease forwards;}
+.product-card:hover{background:rgba(237,229,216,0.88);transform:translateY(-4px);box-shadow:0 20px 56px rgba(31,12,4,0.13);z-index:2;}
+@keyframes cardIn{to{opacity:1;transform:translateY(0);}}
+
+.card-image{width:100%;height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:linear-gradient(145deg,#DAC8B2,#C2A882);}
+.card-bottle-svg{transition:transform 0.4s ease;}
+.product-card:hover .card-bottle-svg{transform:translateY(-8px) scale(1.04);}
+.cat-badge{position:absolute;top:14px;left:14px;font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;padding:4px 10px;border-radius:1px;background:rgba(237,229,216,0.88);color:var(--ember);backdrop-filter:blur(4px);}
+.ori-badge{position:absolute;top:14px;right:14px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(31,12,4,0.65);background:rgba(237,229,216,0.7);padding:3px 8px;border-radius:1px;}
+
+.card-body{padding:20px 22px 16px;}
+.card-brand{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:3px;color:var(--ember-soft);text-transform:uppercase;margin-bottom:5px;}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--ember);letter-spacing:1px;margin-bottom:3px;line-height:1.15;}
+.card-type{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(31,12,4,0.5);letter-spacing:1px;margin-bottom:14px;}
+.card-meta{display:flex;justify-content:space-between;align-items:baseline;}
+.card-vol{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(31,12,4,0.5);}
+.card-price{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--ember);}
+.card-price small{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(31,12,4,0.4);margin-left:2px;}
+
+.card-foot{padding:12px 22px 16px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.card-cta{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ember);display:flex;align-items:center;gap:8px;transition:gap 0.2s;}
+.product-card:hover .card-cta{gap:13px;}
+.card-arrow{font-size:14px;transition:transform 0.2s;}
+.product-card:hover .card-arrow{transform:translateX(3px);}
+.card-min{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;color:rgba(31,12,4,0.35);}
+
+.no-results{grid-column:1/-1;text-align:center;padding:80px 20px;display:none;}
+.no-results h3{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;font-style:italic;color:var(--ember);margin-bottom:10px;}
+.no-results p{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(31,12,4,0.5);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(31,12,4,0.3);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 0.3s ease;}
+.modal-overlay.open{display:flex;}
+.modal-overlay.visible{opacity:1;}
+.modal{background:var(--sand);border:0.5px solid var(--border-strong);border-radius:3px;width:100%;max-width:880px;max-height:90vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1.1fr;transform:translateY(28px);transition:transform 0.35s ease;position:relative;}
+.modal-overlay.visible .modal{transform:translateY(0);}
+
+.modal-close{position:absolute;top:18px;right:18px;z-index:10;width:34px;height:34px;border-radius:50%;background:var(--ember);color:var(--sand);border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;line-height:1;}
+.modal-close:hover{background:var(--ember-mid);transform:scale(1.06);}
+
+.modal-img{min-height:400px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#D4BFA0,#B89070);position:relative;padding:40px;}
+.modal-img-inner{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.modal-img-hint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(31,12,4,0.35);text-transform:uppercase;text-align:center;}
+
+.modal-body{padding:44px 38px;display:flex;flex-direction:column;}
+.m-cat{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:4px;color:var(--ember-soft);text-transform:uppercase;margin-bottom:7px;}
+.m-brand{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:3px;color:rgba(31,12,4,0.5);text-transform:uppercase;margin-bottom:9px;}
+.m-name{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,4vw,42px);font-weight:400;color:var(--ember);letter-spacing:2px;line-height:1.1;margin-bottom:5px;}
+.m-type{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(31,12,4,0.55);letter-spacing:1px;margin-bottom:24px;}
+.m-rule{width:36px;height:0.5px;background:rgba(31,12,4,0.2);margin-bottom:20px;}
+.m-desc{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;line-height:1.85;color:rgba(31,12,4,0.7);margin-bottom:24px;}
+.m-specs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:24px;}
+.spec{background:rgba(237,229,216,0.7);padding:13px 15px;}
+.spec-l{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:2.5px;color:rgba(31,12,4,0.4);text-transform:uppercase;margin-bottom:4px;}
+.spec-v{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--ember);letter-spacing:1px;}
+.m-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:24px;}
+.m-price{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;color:var(--ember);}
+.m-price-lbl{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(31,12,4,0.4);letter-spacing:1px;}
+.m-actions{display:flex;flex-direction:column;gap:10px;margin-top:auto;}
+.btn-quote{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:3px;text-transform:uppercase;padding:15px;background:var(--ember);color:var(--sand);border:none;border-radius:2px;cursor:pointer;transition:all 0.25s;text-align:center;}
+.btn-quote:hover{background:var(--ember-mid);transform:translateY(-1px);box-shadow:0 8px 28px rgba(31,12,4,0.18);}
+.btn-sheet{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;letter-spacing:3px;text-transform:uppercase;padding:14px;background:transparent;color:var(--ember);border:1px solid var(--border-strong);border-radius:2px;cursor:pointer;transition:all 0.25s;text-align:center;}
+.btn-sheet:hover{border-color:var(--ember);}
+
+/* CURSOR */
+.cursor{width:7px;height:7px;background:var(--ember);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+.cursor-ring{width:28px;height:28px;border:1px solid rgba(31,12,4,0.3);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width 0.3s,height 0.3s;}
+
+@media(max-width:900px){
+  nav{padding:18px 24px;}
+  .nav-links{display:none;}
+  .cat-header{padding:36px 24px 28px;grid-template-columns:1fr;}
+  .filter-section{padding:20px 24px;top:64px;}
+  .grid-wrap{padding:28px 24px 60px;}
+  .product-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+  .modal{grid-template-columns:1fr;}
+  .modal-img{min-height:240px;}
+  .modal-body{padding:28px 22px;}
+}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+<div class="blob blob-a"></div>
+<div class="blob blob-b"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeOnOverlay(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    <div class="modal-img" id="m-img">
+      <div class="modal-img-inner">
+        <div class="modal-img-hint">Add product photo via Sanity CMS</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="m-cat" id="m-cat"></div>
+      <div class="m-brand" id="m-brand"></div>
+      <div class="m-name" id="m-name"></div>
+      <div class="m-type" id="m-type"></div>
+      <div class="m-rule"></div>
+      <div class="m-desc" id="m-desc"></div>
+      <div class="m-specs">
+        <div class="spec"><div class="spec-l">Origin</div><div class="spec-v" id="m-origin"></div></div>
+        <div class="spec"><div class="spec-l">Volume</div><div class="spec-v" id="m-volume"></div></div>
+        <div class="spec"><div class="spec-l">ABV</div><div class="spec-v" id="m-abv"></div></div>
+        <div class="spec"><div class="spec-l">Min. Order</div><div class="spec-v" id="m-min"></div></div>
+      </div>
+      <div class="m-price-row">
+        <div class="m-price" id="m-price"></div>
+        <div class="m-price-lbl">per case &mdash; wholesale</div>
+      </div>
+      <div class="m-actions">
+        <button class="btn-quote" onclick="closeModal()">Request a quote</button>
+        <button class="btn-sheet">Download product sheet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="maserena-hero.html" class="nav-logo">Maserena</a>
+  <ul class="nav-links">
+    <li><a href="maserena-about.html">About</a></li>
+    <li><a href="maserena-catalogue.html" class="active">Catalogue</a></li>
+    <li><a href="maserena-order.html">Order</a></li>
+    <li><a href="maserena-events.html">Events</a></li>
+    <li><a href="maserena-contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Partner with us</button>
+</nav>
+
+<div class="page">
+  <div class="cat-header">
+    <div>
+      <div class="cat-label">03 &mdash; Product Catalogue</div>
+      <h1 class="cat-title">Our <em>portfolio</em></h1>
+    </div>
+    <div class="cat-count-box">
+      <span class="cat-count-num" id="result-count">0</span>
+      <span class="cat-count-label">products available</span>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-row">
+      <span class="filter-label">Category</span>
+      <div class="filter-chips">
+        <button class="chip active" data-filter="category" data-value="all">All</button>
+        <button class="chip" data-filter="category" data-value="Spirits">Spirits</button>
+        <button class="chip" data-filter="category" data-value="Wine">Wine</button>
+        <button class="chip" data-filter="category" data-value="Beer">Beer</button>
+        <button class="chip" data-filter="category" data-value="Champagne">Champagne</button>
+        <button class="chip" data-filter="category" data-value="Liqueur">Liqueur</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Origin</span>
+      <div class="filter-chips">
+        <button class="chip active" data-filter="origin" data-value="all">All</button>
+        <button class="chip" data-filter="origin" data-value="Scotland">Scotland</button>
+        <button class="chip" data-filter="origin" data-value="France">France</button>
+        <button class="chip" data-filter="origin" data-value="Kenya">Kenya</button>
+        <button class="chip" data-filter="origin" data-value="Ireland">Ireland</button>
+        <button class="chip" data-filter="origin" data-value="Mexico">Mexico</button>
+        <button class="chip" data-filter="origin" data-value="Italy">Italy</button>
+        <button class="chip" data-filter="origin" data-value="USA">USA</button>
+        <button class="chip" data-filter="origin" data-value="South Africa">S. Africa</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Volume</span>
+      <div class="filter-chips">
+        <button class="chip active" data-filter="volume" data-value="all">All</button>
+        <button class="chip" data-filter="volume" data-value="200ml">200ml</button>
+        <button class="chip" data-filter="volume" data-value="330ml">330ml</button>
+        <button class="chip" data-filter="volume" data-value="500ml">500ml</button>
+        <button class="chip" data-filter="volume" data-value="700ml">700ml</button>
+        <button class="chip" data-filter="volume" data-value="750ml">750ml</button>
+        <button class="chip" data-filter="volume" data-value="1L">1L</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Price range</span>
+      <div class="price-range">
+        <input type="number" class="price-input" id="price-min" placeholder="Min $" min="0">
+        <span class="price-sep">&mdash;</span>
+        <input type="number" class="price-input" id="price-max" placeholder="Max $" min="0">
+        <button class="price-apply" onclick="applyPriceFilter()">Apply</button>
+      </div>
+    </div>
+    <div class="filter-actions">
+      <div class="filter-row" style="flex:1;min-width:0;">
+        <span class="filter-label">Search</span>
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="search-input" placeholder="Search by name or brand..." oninput="applyFilters()">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;flex-shrink:0;">
+        <span class="results-label" id="results-label">Showing all products</span>
+        <button class="clear-btn" onclick="clearAllFilters()">Clear filters</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="product-grid" id="product-grid">
+      <div class="no-results" id="no-results">
+        <h3>No products found</h3>
+        <p>Try adjusting your filters or search term</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Custom cursor
+const cur=document.getElementById('cursor'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-3.5+'px';cur.style.top=my-3.5+'px';});
+(function a(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;ring.style.left=rx-14+'px';ring.style.top=ry-14+'px';requestAnimationFrame(a);})();
+function bigRing(){ring.style.width='44px';ring.style.height='44px';}
+function smallRing(){ring.style.width='28px';ring.style.height='28px';}
+
+// PRODUCT DATA — Replace with Sanity CMS fetch in production
+// Schema: { id, name, brand, category, type, origin, volume, abv, price, minOrder, desc }
+const PRODUCTS = [
+  {id:1,name:'[Whisky Name]',brand:'[Brand Name]',category:'Spirits',type:'Single Malt Scotch Whisky',origin:'Scotland',volume:'700ml',abv:'40%',price:'$[XX]',minOrder:'12 cases',desc:'Add tasting notes, heritage and key selling points for this product via Sanity CMS.'},
+  {id:2,name:'[Gin Name]',brand:'[Brand Name]',category:'Spirits',type:'London Dry Gin',origin:'Ireland',volume:'700ml',abv:'43%',price:'$[XX]',minOrder:'6 cases',desc:'Add botanical profile, distillery story and target market notes via Sanity CMS.'},
+  {id:3,name:'[Vodka Name]',brand:'[Brand Name]',category:'Spirits',type:'Premium Vodka',origin:'France',volume:'1L',abv:'40%',price:'$[XX]',minOrder:'12 cases',desc:'Describe filtration process, grain source and serving occasions via Sanity CMS.'},
+  {id:4,name:'[Tequila Name]',brand:'[Brand Name]',category:'Spirits',type:'Blanco Tequila',origin:'Mexico',volume:'700ml',abv:'38%',price:'$[XX]',minOrder:'6 cases',desc:'Add agave source, production method and flavour profile via Sanity CMS.'},
+  {id:5,name:'[Bourbon Name]',brand:'[Brand Name]',category:'Spirits',type:'Kentucky Straight Bourbon',origin:'USA',volume:'700ml',abv:'45%',price:'$[XX]',minOrder:'6 cases',desc:'Add mash bill, barrel ageing and tasting notes via Sanity CMS.'},
+  {id:6,name:'[Rum Name]',brand:'[Brand Name]',category:'Spirits',type:'Dark Rum',origin:'France',volume:'700ml',abv:'40%',price:'$[XX]',minOrder:'12 cases',desc:'Add sugarcane source, distillation and ageing details via Sanity CMS.'},
+  {id:7,name:'[Red Wine Name]',brand:'[Brand Name]',category:'Wine',type:'Cabernet Sauvignon',origin:'South Africa',volume:'750ml',abv:'14%',price:'$[XX]',minOrder:'24 cases',desc:'Add vineyard, vintage, terroir and food pairing notes via Sanity CMS.'},
+  {id:8,name:'[White Wine Name]',brand:'[Brand Name]',category:'Wine',type:'Sauvignon Blanc',origin:'South Africa',volume:'750ml',abv:'13%',price:'$[XX]',minOrder:'24 cases',desc:'Add vintage notes, winemaker profile and serving temperature via Sanity CMS.'},
+  {id:9,name:'[Italian Wine]',brand:'[Brand Name]',category:'Wine',type:'Chianti Classico',origin:'Italy',volume:'750ml',abv:'13.5%',price:'$[XX]',minOrder:'12 cases',desc:'Add DOCG classification, production notes and ageing details via Sanity CMS.'},
+  {id:10,name:'[Lager Name]',brand:'[Brand Name]',category:'Beer',type:'Premium Lager',origin:'Kenya',volume:'500ml',abv:'5%',price:'$[XX]',minOrder:'50 cases',desc:'Add brewing process, ingredients and market positioning via Sanity CMS.'},
+  {id:11,name:'[Craft Beer Name]',brand:'[Brand Name]',category:'Beer',type:'Craft IPA',origin:'Kenya',volume:'330ml',abv:'6.5%',price:'$[XX]',minOrder:'24 cases',desc:'Add hop varieties, IBU and flavour profile via Sanity CMS.'},
+  {id:12,name:'[Champagne Name]',brand:'[Brand Name]',category:'Champagne',type:'Brut NV',origin:'France',volume:'750ml',abv:'12%',price:'$[XX]',minOrder:'6 cases',desc:'Add house style, blend composition and occasion positioning via Sanity CMS.'},
+  {id:13,name:'[Rose Champagne]',brand:'[Brand Name]',category:'Champagne',type:'Rose Brut',origin:'France',volume:'750ml',abv:'12.5%',price:'$[XX]',minOrder:'6 cases',desc:'Add blend method, pinot noir percentage and colour notes via Sanity CMS.'},
+  {id:14,name:'[Liqueur Name]',brand:'[Brand Name]',category:'Liqueur',type:'Coffee Liqueur',origin:'Mexico',volume:'700ml',abv:'20%',price:'$[XX]',minOrder:'12 cases',desc:'Add base spirit, flavour origins and cocktail applications via Sanity CMS.'},
+  {id:15,name:'[Cognac Name]',brand:'[Brand Name]',category:'Liqueur',type:'VSOP Cognac',origin:'France',volume:'700ml',abv:'40%',price:'$[XX]',minOrder:'6 cases',desc:'Add cru classification, eaux-de-vie blend and ageing notes via Sanity CMS.'},
+];
+
+const CAT_COLORS={
+  'Spirits':{bg:'#7A3A14',light:'#B06030'},
+  'Wine':{bg:'#6A2020',light:'#9A4040'},
+  'Beer':{bg:'#7A5A10',light:'#B08830'},
+  'Champagne':{bg:'#8A7040',light:'#B8A060'},
+  'Liqueur':{bg:'#3A5030',light:'#6A8050'},
+};
+
+function bottleSVG(cat,id,w,h){
+  const c=CAT_COLORS[cat]||{bg:'#5A3010',light:'#8A5030'};
+  w=w||72; h=h||190;
+  const sw=w, sh=h;
+  return `<svg width="${sw}" height="${sh}" viewBox="0 0 72 190" fill="none" class="card-bottle-svg">
+    <defs>
+      <linearGradient id="g${id}" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="${c.bg}" stop-opacity="0.92"/>
+        <stop offset="45%" stop-color="${c.light}" stop-opacity="0.96"/>
+        <stop offset="100%" stop-color="${c.bg}" stop-opacity="0.88"/>
+      </linearGradient>
+      <linearGradient id="h${id}" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+        <stop offset="35%" stop-color="rgba(255,255,255,0.16)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </linearGradient>
+    </defs>
+    <rect x="28" y="1" width="16" height="16" rx="3" fill="${c.bg}" opacity="0.95"/>
+    <path d="M28 16C28 16 22 26 21 34L21 162Q21 172 31 172L41 172Q51 172 51 162L51 34C50 26 44 16 44 16Z" fill="url(#g${id})"/>
+    <path d="M28 16C28 16 22 26 21 34L21 162Q21 172 31 172L41 172Q51 172 51 162L51 34C50 26 44 16 44 16Z" fill="url(#h${id})"/>
+    <rect x="24" y="88" width="24" height="46" rx="2" fill="rgba(237,229,216,0.12)"/>
+    <rect x="26" y="92" width="20" height="0.5" fill="rgba(237,229,216,0.5)"/>
+    <rect x="26" y="130" width="20" height="0.5" fill="rgba(237,229,216,0.5)"/>
+    <path d="M28 16C28 16 22 26 21 34L21 162Q21 172 31 172L41 172Q51 172 51 162L51 34C50 26 44 16 44 16Z" stroke="rgba(31,12,4,0.1)" stroke-width="0.5" fill="none"/>
+  </svg>`;
+}
+
+let filters={category:'all',origin:'all',volume:'all',priceMin:null,priceMax:null,search:''};
+
+function renderCards(products){
+  const grid=document.getElementById('product-grid');
+  const noRes=document.getElementById('no-results');
+  grid.querySelectorAll('.product-card').forEach(c=>c.remove());
+  document.getElementById('result-count').textContent=products.length;
+  if(!products.length){
+    noRes.style.display='block';
+    document.getElementById('results-label').textContent='No products found';
+    return;
+  }
+  noRes.style.display='none';
+  document.getElementById('results-label').textContent='Showing '+products.length+' product'+(products.length!==1?'s':'');
+  products.forEach((p,i)=>{
+    const card=document.createElement('div');
+    card.className='product-card';
+    card.style.animationDelay=(i*0.05)+'s';
+    card.innerHTML=`
+      <div class="card-image">
+        ${bottleSVG(p.category,p.id)}
+        <div class="cat-badge">${p.category}</div>
+        <div class="ori-badge">${p.origin}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">${p.brand}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-type">${p.type}</div>
+        <div class="card-meta">
+          <span class="card-vol">${p.volume} &middot; ${p.abv}</span>
+          <span class="card-price">${p.price}<small>/ case</small></span>
+        </div>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">View details <span class="card-arrow">&rarr;</span></span>
+        <span class="card-min">Min: ${p.minOrder}</span>
+      </div>`;
+    card.addEventListener('click',()=>openModal(p));
+    card.addEventListener('mouseenter',bigRing);
+    card.addEventListener('mouseleave',smallRing);
+    grid.appendChild(card);
+  });
+}
+
+function applyFilters(){
+  filters.search=document.getElementById('search-input').value.toLowerCase();
+  const res=PRODUCTS.filter(p=>{
+    const mc=filters.category==='all'||p.category===filters.category;
+    const mo=filters.origin==='all'||p.origin===filters.origin;
+    const mv=filters.volume==='all'||p.volume===filters.volume;
+    const ms=!filters.search||p.name.toLowerCase().includes(filters.search)||p.brand.toLowerCase().includes(filters.search)||p.type.toLowerCase().includes(filters.search);
+    return mc&&mo&&mv&&ms;
+  });
+  renderCards(res);
+}
+
+function applyPriceFilter(){
+  filters.priceMin=document.getElementById('price-min').value||null;
+  filters.priceMax=document.getElementById('price-max').value||null;
+  applyFilters();
+}
+
+function clearAllFilters(){
+  filters={category:'all',origin:'all',volume:'all',priceMin:null,priceMax:null,search:''};
+  document.getElementById('search-input').value='';
+  document.getElementById('price-min').value='';
+  document.getElementById('price-max').value='';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.value==='all'));
+  applyFilters();
+}
+
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const ft=chip.dataset.filter, val=chip.dataset.value;
+    document.querySelectorAll(`.chip[data-filter="${ft}"]`).forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    filters[ft]=val;
+    applyFilters();
+  });
+  chip.addEventListener('mouseenter',bigRing);
+  chip.addEventListener('mouseleave',smallRing);
+});
+
+function openModal(p){
+  document.getElementById('m-cat').textContent=p.category;
+  document.getElementById('m-brand').textContent=p.brand;
+  document.getElementById('m-name').textContent=p.name;
+  document.getElementById('m-type').textContent=p.type;
+  document.getElementById('m-desc').textContent=p.desc;
+  document.getElementById('m-origin').textContent=p.origin;
+  document.getElementById('m-volume').textContent=p.volume;
+  document.getElementById('m-abv').textContent=p.abv;
+  document.getElementById('m-min').textContent=p.minOrder;
+  document.getElementById('m-price').textContent=p.price;
+  document.getElementById('m-img').innerHTML=`<div class="modal-img-inner">${bottleSVG(p.category,p.id+100,100,260)}<div class="modal-img-hint">Add product photo via Sanity CMS</div></div>`;
+  const ov=document.getElementById('modal-overlay');
+  ov.classList.add('open');
+  requestAnimationFrame(()=>ov.classList.add('visible'));
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  const ov=document.getElementById('modal-overlay');
+  ov.classList.remove('visible');
+  setTimeout(()=>{ov.classList.remove('open');document.body.style.overflow='';},300);
+}
+
+function closeOnOverlay(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+document.querySelectorAll('button,a').forEach(el=>{el.addEventListener('mouseenter',bigRing);el.addEventListener('mouseleave',smallRing);});
+
+renderCards(PRODUCTS);
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maserena — Contact</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{--sand:#EDE5D8;--sand-mid:#D9CBBA;--sand-deep:#C9B49A;--ember:#1F0C04;--ember-mid:#3D1A0A;--ember-soft:#6B3420;--border:rgba(31,12,4,0.12);--border-strong:rgba(31,12,4,0.28);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--ember);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.03;}
+.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+.blob-a{width:600px;height:600px;background:radial-gradient(circle,rgba(180,115,60,0.14) 0%,transparent 70%);top:-150px;right:-150px;animation:bf1 18s ease-in-out infinite;}
+.blob-b{width:450px;height:450px;background:radial-gradient(circle,rgba(31,12,4,0.06) 0%,transparent 70%);bottom:-100px;left:-100px;animation:bf2 22s ease-in-out infinite;}
+.blob-c{width:350px;height:350px;background:radial-gradient(circle,rgba(200,140,80,0.1) 0%,transparent 70%);top:50%;left:40%;animation:bf3 26s ease-in-out infinite;}
+@keyframes bf1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+@keyframes bf2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+@keyframes bf3{0%,100%{transform:translate(0,0)}33%{transform:translate(-20px,20px)}66%{transform:translate(20px,-20px)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:22px 56px;background:rgba(237,229,216,0.93);backdrop-filter:blur(14px);border-bottom:0.5px solid var(--border);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:8px;color:var(--ember);text-transform:uppercase;text-decoration:none;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2.5px;color:rgba(31,12,4,0.6);text-decoration:none;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--ember);font-weight:500;}
+.nav-cta{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:9px 22px;border-radius:2px;border:1px solid var(--border-strong);color:var(--ember);background:transparent;cursor:pointer;transition:all 0.25s;}
+.nav-cta:hover{background:var(--ember);color:var(--sand);}
+.page{position:relative;z-index:1;padding-top:80px;}
+.contact-header{padding:64px 56px 56px;border-bottom:0.5px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;}
+.contact-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:5px;color:var(--ember-soft);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:14px;}
+.contact-label::before{content:'';display:block;width:28px;height:1px;background:var(--ember-soft);opacity:0.5;}
+.contact-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,80px);font-weight:300;color:var(--ember);letter-spacing:2px;line-height:0.95;margin-bottom:0;}
+.contact-title em{font-style:italic;}
+.contact-intro{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;line-height:1.9;color:rgba(31,12,4,0.65);margin-bottom:32px;}
+.channels{display:flex;flex-direction:column;gap:10px;}
+.channel{display:flex;align-items:center;gap:16px;padding:15px 20px;border:0.5px solid var(--border-strong);border-radius:3px;background:rgba(237,229,216,0.5);text-decoration:none;transition:all 0.22s;cursor:pointer;}
+.channel:hover{background:rgba(237,229,216,0.9);border-color:var(--ember);transform:translateX(5px);}
+.channel-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.channel-text{flex:1;}
+.channel-label{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.4);margin-bottom:2px;}
+.channel-value{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--ember);letter-spacing:0.5px;}
+.channel-arrow{font-size:18px;color:rgba(31,12,4,0.25);transition:transform 0.2s,color 0.2s;}
+.channel:hover .channel-arrow{transform:translateX(4px);color:var(--ember);}
+.contact-body{display:grid;grid-template-columns:1fr 400px;gap:0;}
+.form-side{padding:56px 56px 80px;border-right:0.5px solid var(--border);}
+.enquiry-tabs{display:flex;gap:0;margin-bottom:36px;border:0.5px solid var(--border-strong);border-radius:3px;overflow:hidden;}
+.enquiry-tab{flex:1;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;text-align:center;cursor:pointer;border:none;background:rgba(237,229,216,0.4);color:rgba(31,12,4,0.55);transition:all 0.22s;border-right:0.5px solid var(--border-strong);}
+.enquiry-tab:last-child{border-right:none;}
+.enquiry-tab:hover{background:rgba(237,229,216,0.8);color:var(--ember);}
+.enquiry-tab.active{background:var(--ember);color:var(--sand);}
+.form-panel{display:none;}
+.form-panel.active{display:block;}
+.panel-intro{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;line-height:1.75;color:rgba(31,12,4,0.6);margin-bottom:28px;padding:16px 20px;border-left:2px solid var(--sand-deep);background:rgba(237,229,216,0.4);border-radius:0 2px 2px 0;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-grid.full{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:7px;}
+.field-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.55);}
+.field-label span{color:#C44;margin-left:2px;}
+.field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:13px;padding:12px 14px;border:0.5px solid var(--border-strong);border-radius:2px;background:rgba(237,229,216,0.4);color:var(--ember);outline:none;transition:border-color 0.2s,background 0.2s;width:100%;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(31,12,4,0.3);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ember);background:rgba(237,229,216,0.75);}
+.field select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231F0C04' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:12px;padding-right:36px;background-color:rgba(237,229,216,0.4);}
+.field textarea{resize:vertical;min-height:120px;line-height:1.65;}
+.char-count{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(31,12,4,0.3);text-align:right;letter-spacing:0.5px;margin-top:3px;}
+.form-submit{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:24px;border-top:0.5px solid var(--border);gap:20px;}
+.submit-note{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(31,12,4,0.4);line-height:1.6;max-width:240px;}
+.btn-submit{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:3px;text-transform:uppercase;padding:15px 40px;background:var(--ember);color:var(--sand);border:none;border-radius:2px;cursor:pointer;transition:all 0.25s;flex-shrink:0;}
+.btn-submit:hover{background:var(--ember-mid);transform:translateY(-1px);box-shadow:0 8px 28px rgba(31,12,4,0.18);}
+.form-success{display:none;text-align:center;padding:64px 32px;}
+.form-success.show{display:block;}
+.success-ring{width:64px;height:64px;border-radius:50%;background:var(--ember);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:popIn 0.5s ease;}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--ember);letter-spacing:2px;margin-bottom:10px;}
+.success-title em{font-style:italic;}
+.success-body{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;line-height:1.8;color:rgba(31,12,4,0.6);margin-bottom:28px;max-width:360px;margin-left:auto;margin-right:auto;}
+.btn-again{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 32px;border:1px solid var(--border-strong);border-radius:2px;background:transparent;color:var(--ember);cursor:pointer;transition:all 0.25s;}
+.btn-again:hover{background:var(--ember);color:var(--sand);}
+.info-side{padding:56px 40px 80px;background:rgba(237,229,216,0.3);}
+.offices-title{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--ember-soft);margin-bottom:22px;}
+.office-card{margin-bottom:16px;padding:22px 20px;border:0.5px solid var(--border-strong);border-radius:3px;background:rgba(237,229,216,0.5);transition:background 0.25s;position:relative;overflow:hidden;}
+.office-card:hover{background:rgba(237,229,216,0.85);}
+.office-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ember-soft);transform:scaleY(0);transition:transform 0.3s;}
+.office-card:hover::before{transform:scaleY(1);}
+.office-region{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.4);margin-bottom:5px;}
+.office-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--ember);letter-spacing:1px;margin-bottom:14px;}
+.office-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.office-row-icon{font-size:12px;opacity:0.45;margin-top:2px;flex-shrink:0;width:16px;text-align:center;}
+.office-row-text{font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.65);line-height:1.6;}
+.office-row-text a{color:var(--ember);text-decoration:none;}
+.office-row-text a:hover{text-decoration:underline;text-underline-offset:3px;}
+.map-box{margin-top:14px;border-radius:3px;overflow:hidden;border:0.5px solid var(--border);background:linear-gradient(145deg,#D4BFA0,#B89070);height:140px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity 0.2s;position:relative;}
+.map-box:hover{opacity:0.85;}
+.map-box-inner{text-align:center;}
+.map-pin{font-size:24px;display:block;margin-bottom:6px;}
+.map-hint{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(31,12,4,0.45);}
+.info-divider{height:0.5px;background:var(--border);margin:24px 0;}
+.response-box{padding:18px 20px;border:0.5px solid var(--border);border-radius:3px;background:rgba(237,229,216,0.4);}
+.response-title{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ember-soft);margin-bottom:14px;}
+.response-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:0.5px solid var(--border);}
+.response-row:last-child{border-bottom:none;}
+.response-type{font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.65);}
+.response-time{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--ember);}
+.whatsapp-float{position:fixed;bottom:32px;right:32px;z-index:90;display:flex;align-items:center;gap:11px;background:#25D366;color:#fff;padding:14px 22px 14px 18px;border-radius:50px;text-decoration:none;box-shadow:0 8px 32px rgba(37,211,102,0.35);transition:all 0.25s;cursor:pointer;border:none;}
+.whatsapp-float:hover{transform:translateY(-3px);box-shadow:0 14px 44px rgba(37,211,102,0.45);}
+.wa-text{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:#fff;}
+footer{padding:36px 56px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(237,229,216,0.5);}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:6px;color:var(--ember);text-transform:uppercase;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(31,12,4,0.4);text-transform:uppercase;text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--ember);}
+.footer-responsible{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(31,12,4,0.3);text-transform:uppercase;}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.cursor{width:7px;height:7px;background:var(--ember);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+.cursor-ring{width:28px;height:28px;border:1px solid rgba(31,12,4,0.3);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width 0.3s,height 0.3s;}
+.field input.err,.field select.err,.field textarea.err{border-color:#C44 !important;}
+@media(max-width:1100px){.contact-body{grid-template-columns:1fr}.info-side{border-top:0.5px solid var(--border)}}
+@media(max-width:768px){nav{padding:18px 24px}.nav-links{display:none}.contact-header{padding:36px 24px 32px;grid-template-columns:1fr;gap:32px}.form-side{padding:32px 24px 60px}.info-side{padding:32px 24px 60px}.form-grid{grid-template-columns:1fr}.form-submit{flex-direction:column;align-items:stretch}.btn-submit{text-align:center}.enquiry-tabs{flex-direction:column}footer{padding:28px 24px;flex-direction:column;gap:12px;text-align:center}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+<div class="blob blob-a"></div>
+<div class="blob blob-b"></div>
+
+<!-- WhatsApp float -->
+<a class="whatsapp-float" href="https://wa.me/[REPLACE-WHATSAPP-NUMBER]" target="_blank" rel="noopener">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.564 4.14 1.543 5.877L.057 23.5l5.79-1.519A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.893 0-3.658-.527-5.156-1.439l-.371-.22-3.835 1.005 1.026-3.726-.242-.385A9.937 9.937 0 012 12c0-5.514 4.486-10 10-10s10 4.486 10 10-4.486 10-10 10z"/></svg>
+  <span class="wa-text">Chat with us</span>
+</a>
+
+<nav>
+  <a href="maserena-hero.html" class="nav-logo">Maserena</a>
+  <ul class="nav-links">
+    <li><a href="maserena-about.html">About</a></li>
+    <li><a href="maserena-catalogue.html">Catalogue</a></li>
+    <li><a href="maserena-order.html">Order</a></li>
+    <li><a href="maserena-events.html">Events</a></li>
+    <li><a href="maserena-contact.html" class="active">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Partner with us</button>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="contact-header">
+    <div>
+      <div class="contact-label reveal">07 &mdash; Get in touch</div>
+      <h1 class="contact-title reveal">Let's <em>talk</em></h1>
+    </div>
+    <div>
+      <p class="contact-intro reveal">We're a team built on real relationships. Whether you're a buyer, a brand, a journalist or simply curious about Maserena — reach out through whichever channel works best for you.</p>
+      <div class="channels reveal">
+        <!-- REPLACE: Update with real contact details -->
+        <a class="channel" href="mailto:[REPLACE-EMAIL]">
+          <div class="channel-icon" style="background:rgba(31,12,4,0.08);">📧</div>
+          <div class="channel-text">
+            <div class="channel-label">Email</div>
+            <div class="channel-value">[your@maserena.com]</div>
+          </div>
+          <div class="channel-arrow">→</div>
+        </a>
+        <a class="channel" href="tel:[REPLACE-PHONE]">
+          <div class="channel-icon" style="background:rgba(31,12,4,0.08);">📞</div>
+          <div class="channel-text">
+            <div class="channel-label">Phone</div>
+            <div class="channel-value">[+XXX XXX XXX XXX]</div>
+          </div>
+          <div class="channel-arrow">→</div>
+        </a>
+        <a class="channel" href="https://wa.me/[REPLACE-WHATSAPP]" target="_blank">
+          <div class="channel-icon" style="background:rgba(37,211,102,0.12);">💬</div>
+          <div class="channel-text">
+            <div class="channel-label">WhatsApp</div>
+            <div class="channel-value">[+XXX XXX XXX XXX]</div>
+          </div>
+          <div class="channel-arrow">→</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="contact-body">
+
+    <!-- FORM -->
+    <div class="form-side">
+
+      <div class="enquiry-tabs">
+        <button class="enquiry-tab active" onclick="switchTab('general',this)">General</button>
+        <button class="enquiry-tab" onclick="switchTab('wholesale',this)">Wholesale</button>
+        <button class="enquiry-tab" onclick="switchTab('press',this)">Press &amp; Media</button>
+      </div>
+
+      <!-- General enquiry -->
+      <div class="form-panel active" id="panel-general">
+        <div class="panel-intro">For general questions, feedback or anything that doesn't fit neatly into a category. We read every message personally.</div>
+        <div id="form-general">
+          <div class="form-grid">
+            <div class="field"><label class="field-label">First name <span>*</span></label><input type="text" id="g-fname" placeholder="Your name"></div>
+            <div class="field"><label class="field-label">Last name <span>*</span></label><input type="text" id="g-lname" placeholder="Your surname"></div>
+            <div class="field"><label class="field-label">Email <span>*</span></label><input type="email" id="g-email" placeholder="you@email.com"></div>
+            <div class="field"><label class="field-label">Subject</label><input type="text" id="g-subject" placeholder="What is this about?"></div>
+          </div>
+          <div class="form-grid full">
+            <div class="field">
+              <label class="field-label">Message <span>*</span></label>
+              <textarea id="g-message" placeholder="Write your message here..." maxlength="1000" oninput="countChars('g-message','g-count')"></textarea>
+              <div class="char-count"><span id="g-count">0</span> / 1000</div>
+            </div>
+          </div>
+          <div class="form-submit">
+            <p class="submit-note">We respond to all general enquiries within 48 hours.</p>
+            <button class="btn-submit" onclick="submitForm('general')">Send message</button>
+          </div>
+        </div>
+        <div class="form-success" id="success-general">
+          <div class="success-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EDE5D8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3 class="success-title">Message <em>sent.</em></h3>
+          <p class="success-body">Thank you for reaching out. A member of the Maserena team will respond to your message within 48 hours.</p>
+          <button class="btn-again" onclick="resetForm('general')">Send another message</button>
+        </div>
+      </div>
+
+      <!-- Wholesale enquiry -->
+      <div class="form-panel" id="panel-wholesale">
+        <div class="panel-intro">For wholesale partnership and distribution enquiries. Please provide your business details so we can respond with the most relevant information.</div>
+        <div id="form-wholesale">
+          <div class="form-grid">
+            <div class="field"><label class="field-label">Full name <span>*</span></label><input type="text" id="w-name" placeholder="Your full name"></div>
+            <div class="field"><label class="field-label">Company <span>*</span></label><input type="text" id="w-company" placeholder="Company name"></div>
+            <div class="field"><label class="field-label">Business email <span>*</span></label><input type="email" id="w-email" placeholder="you@company.com"></div>
+            <div class="field"><label class="field-label">Phone <span>*</span></label><input type="tel" id="w-phone" placeholder="+XXX XXX XXX XXX"></div>
+            <div class="field"><label class="field-label">Country <span>*</span></label>
+              <select id="w-country">
+                <option value="">Select country</option>
+                <option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Rwanda</option><option>Ethiopia</option><option>South Africa</option><option>Nigeria</option><option>Ghana</option><option>United Kingdom</option><option>France</option><option>Germany</option><option>UAE</option><option>India</option><option>USA</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field"><label class="field-label">Business type <span>*</span></label>
+              <select id="w-biztype">
+                <option value="">Select type</option>
+                <option>Retailer</option><option>Wholesaler / Distributor</option><option>Bar / Restaurant / Hotel</option><option>Importer</option><option>Supermarket / Chain</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid full">
+            <div class="field"><label class="field-label">Categories of interest</label>
+              <select id="w-category">
+                <option value="">Select category</option>
+                <option>Spirits</option><option>Wine</option><option>Beer</option><option>Champagne</option><option>Liqueur</option><option>All categories</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Message <span>*</span></label>
+              <textarea id="w-message" placeholder="Tell us about your business and what you're looking for..." maxlength="1000" oninput="countChars('w-message','w-count')"></textarea>
+              <div class="char-count"><span id="w-count">0</span> / 1000</div>
+            </div>
+          </div>
+          <div class="form-submit">
+            <p class="submit-note">Wholesale enquiries are responded to within 24 hours by our partnerships team.</p>
+            <button class="btn-submit" onclick="submitForm('wholesale')">Submit enquiry</button>
+          </div>
+        </div>
+        <div class="form-success" id="success-wholesale">
+          <div class="success-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EDE5D8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3 class="success-title">Enquiry <em>received.</em></h3>
+          <p class="success-body">Thank you for your wholesale enquiry. Our partnerships team will be in touch within 24 hours to discuss how we can work together.</p>
+          <button class="btn-again" onclick="resetForm('wholesale')">Send another enquiry</button>
+        </div>
+      </div>
+
+      <!-- Press & Media -->
+      <div class="form-panel" id="panel-press">
+        <div class="panel-intro">For media enquiries, interview requests, press releases and brand collaborations. Please include your publication or organisation details.</div>
+        <div id="form-press">
+          <div class="form-grid">
+            <div class="field"><label class="field-label">Full name <span>*</span></label><input type="text" id="p-name" placeholder="Your full name"></div>
+            <div class="field"><label class="field-label">Publication / Organisation <span>*</span></label><input type="text" id="p-org" placeholder="Where do you write for?"></div>
+            <div class="field"><label class="field-label">Email <span>*</span></label><input type="email" id="p-email" placeholder="you@publication.com"></div>
+            <div class="field"><label class="field-label">Request type</label>
+              <select id="p-type">
+                <option value="">Select</option>
+                <option>Interview request</option>
+                <option>Press release</option>
+                <option>Brand collaboration</option>
+                <option>Product review / sampling</option>
+                <option>Photography / filming</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field"><label class="field-label">Deadline</label><input type="date" id="p-deadline"></div>
+            <div class="field"><label class="field-label">Audience size</label>
+              <select id="p-audience">
+                <option value="">Select</option>
+                <option>Under 10K</option>
+                <option>10K — 100K</option>
+                <option>100K — 500K</option>
+                <option>500K — 1M</option>
+                <option>Over 1M</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid full">
+            <div class="field">
+              <label class="field-label">Details <span>*</span></label>
+              <textarea id="p-message" placeholder="Describe your request in detail — what you're covering, your angle, and what you need from Maserena..." maxlength="1000" oninput="countChars('p-message','p-count')"></textarea>
+              <div class="char-count"><span id="p-count">0</span> / 1000</div>
+            </div>
+          </div>
+          <div class="form-submit">
+            <p class="submit-note">Press enquiries are reviewed within 48 hours. Urgent requests — please use WhatsApp.</p>
+            <button class="btn-submit" onclick="submitForm('press')">Submit request</button>
+          </div>
+        </div>
+        <div class="form-success" id="success-press">
+          <div class="success-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EDE5D8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3 class="success-title">Request <em>received.</em></h3>
+          <p class="success-body">Thank you for your media request. We'll review your details and respond within 48 hours. For urgent requests please reach us on WhatsApp.</p>
+          <button class="btn-again" onclick="resetForm('press')">Send another request</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INFO SIDE -->
+    <div class="info-side">
+
+      <div class="offices-title reveal">Regional offices</div>
+
+      <!-- REPLACE: Update all office details with real information -->
+      <div class="office-card reveal">
+        <div class="office-region">East Africa — Headquarters</div>
+        <div class="office-name">Nairobi</div>
+        <div class="office-row"><div class="office-row-icon">📍</div><div class="office-row-text">[Replace with full address, Nairobi, Kenya]</div></div>
+        <div class="office-row"><div class="office-row-icon">📧</div><div class="office-row-text"><a href="mailto:[nairobi@maserena.com]">[nairobi@maserena.com]</a></div></div>
+        <div class="office-row"><div class="office-row-icon">📞</div><div class="office-row-text"><a href="tel:[+254000000000]">[+254 XXX XXX XXX]</a></div></div>
+        <div class="office-row"><div class="office-row-icon">⏰</div><div class="office-row-text">Mon – Fri, 8am – 6pm EAT</div></div>
+        <div class="map-box" onclick="window.open('https://maps.google.com/?q=[Replace+with+address]','_blank')">
+          <div class="map-box-inner">
+            <span class="map-pin">📌</span>
+            <div class="map-hint">View on Google Maps</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="office-card reveal">
+        <div class="office-region">Europe</div>
+        <div class="office-name">[City, Country]</div>
+        <div class="office-row"><div class="office-row-icon">📍</div><div class="office-row-text">[Replace with full European office address]</div></div>
+        <div class="office-row"><div class="office-row-icon">📧</div><div class="office-row-text"><a href="mailto:[europe@maserena.com]">[europe@maserena.com]</a></div></div>
+        <div class="office-row"><div class="office-row-icon">📞</div><div class="office-row-text"><a href="tel:[+000000000]">[+XX XXX XXX XXXX]</a></div></div>
+        <div class="office-row"><div class="office-row-icon">⏰</div><div class="office-row-text">Mon – Fri, 9am – 5pm CET</div></div>
+      </div>
+
+      <div class="office-card reveal">
+        <div class="office-region">Asia Pacific</div>
+        <div class="office-name">[City, Country]</div>
+        <div class="office-row"><div class="office-row-icon">📍</div><div class="office-row-text">[Replace with full Asia Pacific office address]</div></div>
+        <div class="office-row"><div class="office-row-icon">📧</div><div class="office-row-text"><a href="mailto:[asia@maserena.com]">[asia@maserena.com]</a></div></div>
+        <div class="office-row"><div class="office-row-icon">📞</div><div class="office-row-text"><a href="tel:[+000000000]">[+XX XXXX XXXX]</a></div></div>
+        <div class="office-row"><div class="office-row-icon">⏰</div><div class="office-row-text">Mon – Fri, 9am – 6pm local time</div></div>
+      </div>
+
+      <div class="info-divider"></div>
+
+      <div class="response-box reveal">
+        <div class="response-title">Response times</div>
+        <div class="response-row"><span class="response-type">Wholesale enquiries</span><span class="response-time">24 hours</span></div>
+        <div class="response-row"><span class="response-type">General messages</span><span class="response-time">48 hours</span></div>
+        <div class="response-row"><span class="response-type">Press requests</span><span class="response-time">48 hours</span></div>
+        <div class="response-row"><span class="response-type">WhatsApp</span><span class="response-time">Same day</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Maserena</div>
+    <div class="footer-links">
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms</a>
+      <a href="#">Catalogue</a>
+    </div>
+    <div class="footer-responsible">Drink responsibly &middot; 18+ only &middot; &copy; 2025 Maserena</div>
+  </footer>
+
+</div>
+
+<script>
+// Cursor
+const cur=document.getElementById('cursor'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-3.5+'px';cur.style.top=my-3.5+'px';});
+(function a(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;ring.style.left=rx-14+'px';ring.style.top=ry-14+'px';requestAnimationFrame(a);})();
+function bigRing(){ring.style.width='44px';ring.style.height='44px';}
+function smallRing(){ring.style.width='28px';ring.style.height='28px';}
+document.querySelectorAll('button,a,input,select,textarea,.channel,.office-card,.map-box').forEach(el=>{
+  el.addEventListener('mouseenter',bigRing);el.addEventListener('mouseleave',smallRing);
+});
+
+// Tab switching
+function switchTab(tab, btn){
+  document.querySelectorAll('.enquiry-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// Char counter
+function countChars(inputId, countId){
+  const el=document.getElementById(inputId);
+  document.getElementById(countId).textContent=el.value.length;
+}
+
+// Form validation & submit
+const required={
+  general:['g-fname','g-lname','g-email','g-message'],
+  wholesale:['w-name','w-company','w-email','w-phone','w-country','w-biztype','w-message'],
+  press:['p-name','p-org','p-email','p-message']
+};
+
+function submitForm(type){
+  const fields=required[type];
+  let valid=true;
+  fields.forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('err');
+    if(!el.value.trim()){el.classList.add('err');valid=false;}
+  });
+  if(!valid){
+    const first=document.querySelector('.err');
+    if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  // In production: POST to your backend / Resend API
+  // fetch('/api/contact', { method:'POST', body: JSON.stringify(collectData(type)) })
+  document.getElementById('form-'+type).style.display='none';
+  document.getElementById('success-'+type).classList.add('show');
+}
+
+function resetForm(type){
+  document.getElementById('form-'+type).style.display='block';
+  document.getElementById('success-'+type).classList.remove('show');
+  // Clear fields
+  required[type].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.classList.remove('err');}
+  });
+}
+
+// Scroll reveal
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+},{threshold:0.12,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+setTimeout(()=>{
+  document.querySelectorAll('.reveal').forEach(el=>{
+    if(el.getBoundingClientRect().top<window.innerHeight*0.9)el.classList.add('visible');
+  });
+},100);
+</script>
+</body>
+</html>

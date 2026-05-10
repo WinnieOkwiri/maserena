@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maserena — Wholesale Order</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --sand:#EDE5D8; --sand-mid:#D9CBBA; --sand-deep:#C9B49A;
+  --ember:#1F0C04; --ember-mid:#3D1A0A; --ember-soft:#6B3420;
+  --border:rgba(31,12,4,0.12); --border-strong:rgba(31,12,4,0.28);
+  --success:#2A5C3A;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--ember);min-height:100vh;overflow-x:hidden;}
+
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.03;}
+
+.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+.blob-a{width:600px;height:600px;background:radial-gradient(circle,rgba(180,115,60,0.14) 0%,transparent 70%);top:-150px;right:-150px;animation:bf1 18s ease-in-out infinite;}
+.blob-b{width:450px;height:450px;background:radial-gradient(circle,rgba(31,12,4,0.06) 0%,transparent 70%);bottom:-100px;left:-100px;animation:bf2 22s ease-in-out infinite;}
+@keyframes bf1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+@keyframes bf2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:22px 56px;background:rgba(237,229,216,0.93);backdrop-filter:blur(14px);border-bottom:0.5px solid var(--border);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:8px;color:var(--ember);text-transform:uppercase;text-decoration:none;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2.5px;color:rgba(31,12,4,0.6);text-decoration:none;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--ember);font-weight:500;}
+.nav-cta{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:9px 22px;border-radius:2px;border:1px solid var(--border-strong);color:var(--ember);background:transparent;cursor:pointer;transition:all 0.25s;}
+.nav-cta:hover{background:var(--ember);color:var(--sand);}
+
+/* PAGE */
+.page{position:relative;z-index:1;padding-top:80px;}
+
+/* HEADER */
+.order-header{padding:56px 56px 44px;border-bottom:0.5px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;}
+.order-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:5px;color:var(--ember-soft);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.order-label::before{content:'';display:block;width:28px;height:1px;background:var(--ember-soft);opacity:0.5;}
+.order-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,68px);font-weight:300;color:var(--ember);letter-spacing:2px;line-height:1;}
+.order-title em{font-style:italic;}
+.order-intro{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;line-height:1.85;color:rgba(31,12,4,0.65);max-width:480px;}
+.order-intro strong{font-weight:500;color:var(--ember);}
+
+/* STEP INDICATOR */
+.steps{display:flex;align-items:center;gap:0;padding:28px 56px;border-bottom:0.5px solid var(--border);background:rgba(237,229,216,0.6);}
+.step{display:flex;align-items:center;gap:12px;flex:1;}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;border:1px solid var(--border-strong);color:rgba(31,12,4,0.45);background:transparent;transition:all 0.3s;flex-shrink:0;}
+.step-num.active{background:var(--ember);color:var(--sand);border-color:var(--ember);}
+.step-num.done{background:var(--ember-soft);color:var(--sand);border-color:var(--ember-soft);}
+.step-label{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(31,12,4,0.45);transition:color 0.3s;}
+.step-label.active{color:var(--ember);font-weight:500;}
+.step-line{flex:1;height:0.5px;background:var(--border);margin:0 16px;}
+
+/* MAIN LAYOUT */
+.order-layout{display:grid;grid-template-columns:1fr 380px;gap:0;min-height:calc(100vh - 80px);align-items:start;}
+
+/* LEFT — FORM PANELS */
+.form-side{padding:48px 56px;border-right:0.5px solid var(--border);}
+
+.form-panel{display:none;}
+.form-panel.active{display:block;}
+
+/* Panel header */
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--ember);letter-spacing:1px;margin-bottom:6px;}
+.panel-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(31,12,4,0.55);margin-bottom:36px;letter-spacing:0.5px;}
+
+/* Product picker */
+.product-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px;}
+.pick-card{border:0.5px solid var(--border-strong);border-radius:3px;padding:16px 18px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:14px;background:rgba(237,229,216,0.4);}
+.pick-card:hover{background:rgba(237,229,216,0.8);border-color:var(--ember);}
+.pick-card.in-basket{background:rgba(31,12,4,0.06);border-color:var(--ember);}
+.pick-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.pick-info{flex:1;min-width:0;}
+.pick-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--ember);letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pick-cat{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(31,12,4,0.45);text-transform:uppercase;}
+.pick-add{font-family:'DM Sans',sans-serif;font-size:18px;color:var(--ember-soft);transition:transform 0.2s;line-height:1;flex-shrink:0;}
+.pick-card:hover .pick-add{transform:scale(1.2);}
+.pick-card.in-basket .pick-add{color:var(--ember);}
+
+.qty-row{display:flex;align-items:center;gap:10px;margin-top:8px;}
+.qty-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(31,12,4,0.45);}
+.qty-input{font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 10px;width:70px;border:0.5px solid var(--border-strong);border-radius:2px;background:transparent;color:var(--ember);outline:none;text-align:center;}
+.qty-input:focus{border-color:var(--ember);}
+
+/* Form fields */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px;}
+.form-grid.full{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:7px;}
+.field-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.55);}
+.field-label span{color:#C44;margin-left:2px;}
+.field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:13px;padding:12px 14px;border:0.5px solid var(--border-strong);border-radius:2px;background:rgba(237,229,216,0.4);color:var(--ember);outline:none;transition:border-color 0.2s,background 0.2s;width:100%;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(31,12,4,0.3);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ember);background:rgba(237,229,216,0.7);}
+.field select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231F0C04' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:12px;padding-right:36px;}
+.field textarea{resize:vertical;min-height:100px;line-height:1.6;}
+.field-hint{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(31,12,4,0.35);letter-spacing:0.5px;}
+
+/* Payment terms */
+.payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.pay-opt{border:0.5px solid var(--border-strong);border-radius:3px;padding:16px 14px;cursor:pointer;transition:all 0.2s;text-align:center;background:rgba(237,229,216,0.4);}
+.pay-opt:hover{border-color:var(--ember);background:rgba(237,229,216,0.7);}
+.pay-opt.selected{background:var(--ember);border-color:var(--ember);}
+.pay-opt-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--ember);margin-bottom:4px;transition:color 0.2s;}
+.pay-opt.selected .pay-opt-title{color:var(--sand);}
+.pay-opt-desc{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(31,12,4,0.45);text-transform:uppercase;transition:color 0.2s;}
+.pay-opt.selected .pay-opt-desc{color:rgba(237,229,216,0.65);}
+
+/* Shipping section */
+.section-divider{display:flex;align-items:center;gap:16px;margin:28px 0 22px;}
+.sec-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.45);white-space:nowrap;}
+.sec-line{flex:1;height:0.5px;background:var(--border);}
+
+/* Terms checkbox */
+.terms-row{display:flex;align-items:flex-start;gap:12px;padding:20px 0;border-top:0.5px solid var(--border);}
+.terms-check{width:18px;height:18px;border:1px solid var(--border-strong);border-radius:2px;cursor:pointer;flex-shrink:0;appearance:none;margin-top:1px;transition:all 0.2s;position:relative;}
+.terms-check:checked{background:var(--ember);border-color:var(--ember);}
+.terms-check:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--sand);font-size:11px;line-height:1;}
+.terms-text{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.65;color:rgba(31,12,4,0.6);}
+.terms-text a{color:var(--ember);text-underline-offset:3px;}
+
+/* Navigation buttons */
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:36px;padding-top:28px;border-top:0.5px solid var(--border);}
+.btn-back{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(31,12,4,0.5);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;transition:color 0.2s;padding:0;}
+.btn-back:hover{color:var(--ember);}
+.btn-next{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:3px;text-transform:uppercase;padding:15px 44px;background:var(--ember);color:var(--sand);border:none;border-radius:2px;cursor:pointer;transition:all 0.25s;}
+.btn-next:hover{background:var(--ember-mid);transform:translateY(-1px);box-shadow:0 8px 28px rgba(31,12,4,0.18);}
+.btn-next:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-submit{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:3px;text-transform:uppercase;padding:15px 44px;background:var(--ember);color:var(--sand);border:none;border-radius:2px;cursor:pointer;transition:all 0.25s;}
+.btn-submit:hover{background:var(--ember-mid);transform:translateY(-1px);box-shadow:0 8px 28px rgba(31,12,4,0.18);}
+
+/* RIGHT — ORDER SUMMARY */
+.summary-side{padding:48px 40px;position:sticky;top:80px;background:rgba(237,229,216,0.5);border-left:0.5px solid var(--border);min-height:calc(100vh - 80px);}
+.summary-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--ember);letter-spacing:2px;margin-bottom:4px;}
+.summary-sub{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(31,12,4,0.4);margin-bottom:28px;}
+
+.basket-empty{text-align:center;padding:40px 20px;}
+.basket-empty-icon{font-size:32px;margin-bottom:12px;opacity:0.3;}
+.basket-empty-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:rgba(31,12,4,0.4);}
+.basket-empty-hint{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(31,12,4,0.3);margin-top:6px;}
+
+.basket-items{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
+.basket-item{padding:14px 0;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;gap:14px;}
+.basket-item-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.basket-item-info{flex:1;min-width:0;}
+.basket-item-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--ember);letter-spacing:0.5px;margin-bottom:2px;}
+.basket-item-cat{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(31,12,4,0.45);text-transform:uppercase;}
+.basket-item-qty{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(31,12,4,0.5);margin-top:4px;}
+.basket-item-remove{font-family:'DM Sans',sans-serif;font-size:18px;color:rgba(31,12,4,0.25);cursor:pointer;transition:color 0.2s;line-height:1;background:none;border:none;flex-shrink:0;padding:2px;}
+.basket-item-remove:hover{color:var(--ember);}
+
+.summary-rule{height:0.5px;background:var(--border);margin:20px 0;}
+
+.summary-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.summary-row-label{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(31,12,4,0.5);}
+.summary-row-val{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--ember);}
+.summary-total{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0;border-top:1px solid rgba(31,12,4,0.2);}
+.summary-total-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ember);}
+.summary-total-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--ember);}
+
+.summary-note{font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.7;color:rgba(31,12,4,0.45);margin-top:20px;padding:14px 16px;border:0.5px solid var(--border);border-radius:2px;background:rgba(237,229,216,0.5);}
+
+/* SUCCESS SCREEN */
+.success-screen{display:none;position:fixed;inset:0;z-index:100;background:var(--sand);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px;}
+.success-screen.show{display:flex;}
+.success-icon{width:72px;height:72px;border-radius:50%;background:var(--ember);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;animation:scaleIn 0.5s ease;}
+@keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-icon svg{stroke:var(--sand);}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);font-weight:300;color:var(--ember);letter-spacing:2px;margin-bottom:12px;}
+.success-title em{font-style:italic;}
+.success-body{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;line-height:1.85;color:rgba(31,12,4,0.65);max-width:480px;margin:0 auto 36px;}
+.success-ref{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--ember-soft);letter-spacing:2px;margin-bottom:32px;}
+.success-ref span{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.4);display:block;margin-bottom:4px;}
+.success-actions{display:flex;gap:14px;justify-content:center;}
+
+/* CURSOR */
+.cursor{width:7px;height:7px;background:var(--ember);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+.cursor-ring{width:28px;height:28px;border:1px solid rgba(31,12,4,0.3);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width 0.3s,height 0.3s;}
+
+/* validation */
+.field input.error,.field select.error,.field textarea.error{border-color:#C44;}
+.error-msg{font-family:'DM Sans',sans-serif;font-size:10px;color:#C44;letter-spacing:0.5px;margin-top:2px;}
+
+@media(max-width:1100px){.order-layout{grid-template-columns:1fr}.summary-side{position:relative;top:0;min-height:auto;border-left:none;border-top:0.5px solid var(--border);}}
+@media(max-width:768px){nav{padding:18px 24px;}.nav-links{display:none;}.order-header{padding:36px 24px 28px;grid-template-columns:1fr;}.steps{padding:20px 24px;}.step-label{display:none;}.form-side{padding:32px 24px;}.summary-side{padding:32px 24px;}.form-grid{grid-template-columns:1fr;}.product-picker{grid-template-columns:1fr;}.payment-options{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+<div class="blob blob-a"></div>
+<div class="blob blob-b"></div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <h2 class="success-title">Order <em>received.</em></h2>
+  <p class="success-body">Thank you for your wholesale enquiry. Our team will review your order and respond within <strong>24 hours</strong>. A confirmation has been sent to your email address.</p>
+  <div class="success-ref">
+    <span>Your reference number</span>
+    <span id="ref-number">MSR-000000</span>
+  </div>
+  <div class="success-actions">
+    <button class="btn-next" onclick="location.reload()">Place another order</button>
+    <button class="btn-back" style="padding:0 20px;" onclick="location.href='#'">&#8592; Back to catalogue</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="maserena-about.html" class="nav-logo">Maserena</a>
+  <ul class="nav-links">
+    <li><a href="maserena-about.html">About</a></li>
+    <li><a href="maserena-catalogue.html">Catalogue</a></li>
+    <li><a href="maserena-order.html" class="active">Order</a></li>
+    <li><a href="maserena-events.html">Events</a></li>
+    <li><a href="maserena-contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Partner with us</button>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="order-header">
+    <div>
+      <div class="order-label">04 &mdash; Wholesale Enquiry</div>
+      <h1 class="order-title">Place your <em>order</em></h1>
+    </div>
+    <p class="order-intro">
+      Select products, provide your company details and preferred payment terms. Our team will confirm availability, pricing and delivery within <strong>24 hours</strong>. All orders are handled personally — no automated processing.
+    </p>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step">
+      <div class="step-num active" id="sn1">1</div>
+      <div class="step-label active" id="sl1">Select products</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num" id="sn2">2</div>
+      <div class="step-label" id="sl2">Company details</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num" id="sn3">3</div>
+      <div class="step-label" id="sl3">Shipping & payment</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num" id="sn4">4</div>
+      <div class="step-label" id="sl4">Review & submit</div>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="order-layout">
+
+    <!-- FORM SIDE -->
+    <div class="form-side">
+
+      <!-- STEP 1: SELECT PRODUCTS -->
+      <div class="form-panel active" id="panel-1">
+        <h2 class="panel-title">Select products</h2>
+        <p class="panel-sub">Choose the products you wish to enquire about. Add quantities for each.</p>
+
+        <div class="product-picker" id="product-picker">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="form-nav">
+          <div></div>
+          <button class="btn-next" id="next-1" onclick="goToStep(2)" disabled>Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: COMPANY DETAILS -->
+      <div class="form-panel" id="panel-2">
+        <h2 class="panel-title">Company details</h2>
+        <p class="panel-sub">Tell us about your business so we can tailor our response.</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field-label">First name <span>*</span></label>
+            <input type="text" id="f-firstname" placeholder="Your first name" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Last name <span>*</span></label>
+            <input type="text" id="f-lastname" placeholder="Your last name" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Company name <span>*</span></label>
+            <input type="text" id="f-company" placeholder="Your company or business name" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Job title <span>*</span></label>
+            <input type="text" id="f-jobtitle" placeholder="e.g. Purchasing Manager" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Business email <span>*</span></label>
+            <input type="email" id="f-email" placeholder="you@company.com" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Phone number <span>*</span></label>
+            <input type="tel" id="f-phone" placeholder="+254 700 000 000" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Country of registration <span>*</span></label>
+            <select id="f-country" required>
+              <option value="">Select country</option>
+              <option>Kenya</option><option>Uganda</option><option>Tanzania</option>
+              <option>Rwanda</option><option>Ethiopia</option><option>South Africa</option>
+              <option>Nigeria</option><option>Ghana</option><option>United Kingdom</option>
+              <option>France</option><option>Germany</option><option>Italy</option>
+              <option>UAE</option><option>India</option><option>China</option>
+              <option>USA</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Business type <span>*</span></label>
+            <select id="f-biztype" required>
+              <option value="">Select type</option>
+              <option>Retailer</option>
+              <option>Wholesaler / Distributor</option>
+              <option>Bar / Restaurant / Hotel</option>
+              <option>Importer</option>
+              <option>Supermarket / Chain</option>
+              <option>Online retailer</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid full">
+          <div class="field">
+            <label class="field-label">Business registration number</label>
+            <input type="text" id="f-regnumber" placeholder="Optional — for formal trade accounts">
+            <div class="field-hint">Providing this speeds up account verification</div>
+          </div>
+          <div class="field">
+            <label class="field-label">How did you hear about Maserena?</label>
+            <select id="f-source">
+              <option value="">Select</option>
+              <option>Trade show / Exhibition</option>
+              <option>Referral from partner</option>
+              <option>Online search</option>
+              <option>Social media</option>
+              <option>Industry publication</option>
+              <option>Direct contact from Maserena</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="goToStep(1)">&#8592; Back</button>
+          <button class="btn-next" onclick="validateStep2()">Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: SHIPPING & PAYMENT -->
+      <div class="form-panel" id="panel-3">
+        <h2 class="panel-title">Shipping & payment</h2>
+        <p class="panel-sub">Delivery details and your preferred payment terms.</p>
+
+        <div class="section-divider"><div class="sec-line"></div><div class="sec-label">Delivery details</div><div class="sec-line"></div></div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field-label">Delivery country <span>*</span></label>
+            <select id="f-delcountry" required>
+              <option value="">Select country</option>
+              <option>Kenya</option><option>Uganda</option><option>Tanzania</option>
+              <option>Rwanda</option><option>Ethiopia</option><option>South Africa</option>
+              <option>Nigeria</option><option>Ghana</option><option>United Kingdom</option>
+              <option>France</option><option>Germany</option><option>UAE</option>
+              <option>India</option><option>USA</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Delivery city <span>*</span></label>
+            <input type="text" id="f-delcity" placeholder="City / town" required>
+          </div>
+        </div>
+
+        <div class="form-grid full">
+          <div class="field">
+            <label class="field-label">Full delivery address <span>*</span></label>
+            <textarea id="f-deladdress" placeholder="Street, area, postal code..." required></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">Preferred delivery window</label>
+            <select id="f-delwindow">
+              <option value="">No preference</option>
+              <option>As soon as possible</option>
+              <option>Within 2 weeks</option>
+              <option>Within 1 month</option>
+              <option>Specific date (mention in notes)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-divider"><div class="sec-line"></div><div class="sec-label">Payment preference</div><div class="sec-line"></div></div>
+
+        <div class="payment-options" id="payment-options">
+          <div class="pay-opt selected" data-pay="Pro Forma Invoice" onclick="selectPay(this)">
+            <div class="pay-opt-title">Pro Forma</div>
+            <div class="pay-opt-desc">Pay before dispatch</div>
+          </div>
+          <div class="pay-opt" data-pay="30 Days Net" onclick="selectPay(this)">
+            <div class="pay-opt-title">30 Days Net</div>
+            <div class="pay-opt-desc">Invoice on delivery</div>
+          </div>
+          <div class="pay-opt" data-pay="Letter of Credit" onclick="selectPay(this)">
+            <div class="pay-opt-title">Letter of Credit</div>
+            <div class="pay-opt-desc">Bank-guaranteed</div>
+          </div>
+          <div class="pay-opt" data-pay="50% Deposit" onclick="selectPay(this)">
+            <div class="pay-opt-title">50% Deposit</div>
+            <div class="pay-opt-desc">Split payment</div>
+          </div>
+          <div class="pay-opt" data-pay="Open Account" onclick="selectPay(this)">
+            <div class="pay-opt-title">Open Account</div>
+            <div class="pay-opt-desc">Established buyers</div>
+          </div>
+          <div class="pay-opt" data-pay="To be discussed" onclick="selectPay(this)">
+            <div class="pay-opt-title">Discuss</div>
+            <div class="pay-opt-desc">Open to negotiation</div>
+          </div>
+        </div>
+
+        <div class="form-grid full">
+          <div class="field">
+            <label class="field-label">Preferred currency</label>
+            <select id="f-currency">
+              <option>USD — US Dollar</option>
+              <option>EUR — Euro</option>
+              <option>GBP — British Pound</option>
+              <option>KES — Kenyan Shilling</option>
+              <option>AED — UAE Dirham</option>
+              <option>ZAR — South African Rand</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Additional notes</label>
+            <textarea id="f-notes" placeholder="Any special requirements, custom packaging, delivery instructions or questions for our team..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="goToStep(2)">&#8592; Back</button>
+          <button class="btn-next" onclick="validateStep3()">Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: REVIEW & SUBMIT -->
+      <div class="form-panel" id="panel-4">
+        <h2 class="panel-title">Review & submit</h2>
+        <p class="panel-sub">Please review your order details before submitting.</p>
+
+        <div id="review-content"></div>
+
+        <div class="terms-row">
+          <input type="checkbox" class="terms-check" id="terms-check">
+          <label for="terms-check" class="terms-text">
+            I confirm that I am a licensed business and that I accept Maserena's <a href="#">wholesale terms and conditions</a> and <a href="#">privacy policy</a>. I understand this is an enquiry and not a confirmed order.
+          </label>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="goToStep(3)">&#8592; Back</button>
+          <button class="btn-submit" onclick="submitOrder()">Submit order enquiry</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SUMMARY SIDE -->
+    <div class="summary-side">
+      <div class="summary-title">Order summary</div>
+      <div class="summary-sub">Wholesale basket</div>
+
+      <div id="basket-display">
+        <div class="basket-empty" id="basket-empty">
+          <div class="basket-empty-icon">&#9785;</div>
+          <div class="basket-empty-text">Your basket is empty</div>
+          <div class="basket-empty-hint">Select products on the left to begin</div>
+        </div>
+        <div class="basket-items" id="basket-items" style="display:none;"></div>
+      </div>
+
+      <div id="basket-totals" style="display:none;">
+        <div class="summary-rule"></div>
+        <div class="summary-row">
+          <span class="summary-row-label">Products</span>
+          <span class="summary-row-val" id="sum-products">0</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row-label">Total cases</span>
+          <span class="summary-row-val" id="sum-cases">0</span>
+        </div>
+        <div class="summary-total">
+          <span class="summary-total-label">Est. value</span>
+          <span class="summary-total-val">TBC</span>
+        </div>
+      </div>
+
+      <div class="summary-note">
+        Final pricing, availability and delivery costs will be confirmed by the Maserena team within 24 hours of submission. All prices are wholesale ex-warehouse unless stated.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Custom cursor
+const cur=document.getElementById('cursor'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-3.5+'px';cur.style.top=my-3.5+'px';});
+(function a(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;ring.style.left=rx-14+'px';ring.style.top=ry-14+'px';requestAnimationFrame(a);})();
+function bigRing(){ring.style.width='44px';ring.style.height='44px';}
+function smallRing(){ring.style.width='28px';ring.style.height='28px';}
+document.querySelectorAll('button,a,input,select,textarea').forEach(el=>{
+  el.addEventListener('mouseenter',bigRing);el.addEventListener('mouseleave',smallRing);
+});
+
+// PRODUCTS — Replace with Sanity CMS fetch in production
+const PRODUCTS=[
+  {id:1,name:'[Whisky Name]',brand:'[Brand]',category:'Spirits',color:'#7A3A14'},
+  {id:2,name:'[Gin Name]',brand:'[Brand]',category:'Spirits',color:'#4A6A4A'},
+  {id:3,name:'[Vodka Name]',brand:'[Brand]',category:'Spirits',color:'#5A5A7A'},
+  {id:4,name:'[Tequila Name]',brand:'[Brand]',category:'Spirits',color:'#7A6A14'},
+  {id:5,name:'[Bourbon Name]',brand:'[Brand]',category:'Spirits',color:'#6A3A10'},
+  {id:6,name:'[Rum Name]',brand:'[Brand]',category:'Spirits',color:'#5A2A10'},
+  {id:7,name:'[Red Wine]',brand:'[Brand]',category:'Wine',color:'#6A2020'},
+  {id:8,name:'[White Wine]',brand:'[Brand]',category:'Wine',color:'#8A7A30'},
+  {id:9,name:'[Italian Wine]',brand:'[Brand]',category:'Wine',color:'#7A3030'},
+  {id:10,name:'[Lager]',brand:'[Brand]',category:'Beer',color:'#7A5A10'},
+  {id:11,name:'[Craft IPA]',brand:'[Brand]',category:'Beer',color:'#6A4A08'},
+  {id:12,name:'[Champagne]',brand:'[Brand]',category:'Champagne',color:'#8A7840'},
+  {id:13,name:'[Rosé Champagne]',brand:'[Brand]',category:'Champagne',color:'#8A5050'},
+  {id:14,name:'[Liqueur]',brand:'[Brand]',category:'Liqueur',color:'#4A5A3A'},
+  {id:15,name:'[Cognac]',brand:'[Brand]',category:'Liqueur',color:'#5A3A10'},
+];
+
+// Basket state
+let basket={};
+let selectedPay='Pro Forma Invoice';
+let currentStep=1;
+
+// Build product picker
+function buildPicker(){
+  const picker=document.getElementById('product-picker');
+  PRODUCTS.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='pick-card';
+    card.id='pick-'+p.id;
+    card.innerHTML=`
+      <div class="pick-dot" style="background:${p.color};"></div>
+      <div class="pick-info">
+        <div class="pick-name">${p.name}</div>
+        <div class="pick-cat">${p.category}</div>
+        <div class="qty-row" style="display:none;" id="qty-row-${p.id}">
+          <span class="qty-label">Cases</span>
+          <input type="number" class="qty-input" id="qty-${p.id}" min="1" value="1" onclick="event.stopPropagation()" oninput="updateQty(${p.id},this.value)">
+        </div>
+      </div>
+      <div class="pick-add" id="add-${p.id}">+</div>`;
+    card.addEventListener('click',()=>toggleProduct(p.id));
+    picker.appendChild(card);
+  });
+}
+
+function toggleProduct(id){
+  const card=document.getElementById('pick-'+id);
+  const qtyRow=document.getElementById('qty-row-'+id);
+  const addBtn=document.getElementById('add-'+id);
+  if(basket[id]){
+    delete basket[id];
+    card.classList.remove('in-basket');
+    qtyRow.style.display='none';
+    addBtn.textContent='+';
+  } else {
+    basket[id]={qty:1};
+    card.classList.add('in-basket');
+    qtyRow.style.display='flex';
+    addBtn.textContent='✓';
+  }
+  updateBasketDisplay();
+  document.getElementById('next-1').disabled=Object.keys(basket).length===0;
+}
+
+function updateQty(id,val){
+  if(basket[id]){
+    basket[id].qty=Math.max(1,parseInt(val)||1);
+    updateBasketDisplay();
+  }
+}
+
+function updateBasketDisplay(){
+  const items=Object.keys(basket);
+  const empty=document.getElementById('basket-empty');
+  const itemsEl=document.getElementById('basket-items');
+  const totals=document.getElementById('basket-totals');
+  const sumProds=document.getElementById('sum-products');
+  const sumCases=document.getElementById('sum-cases');
+
+  if(!items.length){
+    empty.style.display='block';
+    itemsEl.style.display='none';
+    totals.style.display='none';
+    return;
+  }
+  empty.style.display='none';
+  itemsEl.style.display='flex';
+  totals.style.display='block';
+
+  itemsEl.innerHTML='';
+  let totalCases=0;
+  items.forEach(id=>{
+    const p=PRODUCTS.find(x=>x.id==id);
+    const qty=basket[id].qty;
+    totalCases+=qty;
+    const item=document.createElement('div');
+    item.className='basket-item';
+    item.innerHTML=`
+      <div class="basket-item-dot" style="background:${p.color};margin-top:6px;"></div>
+      <div class="basket-item-info">
+        <div class="basket-item-name">${p.name}</div>
+        <div class="basket-item-cat">${p.category} &middot; ${p.brand}</div>
+        <div class="basket-item-qty">${qty} case${qty!==1?'s':''} requested</div>
+      </div>
+      <button class="basket-item-remove" onclick="removeFromBasket(${id})" title="Remove">&times;</button>`;
+    itemsEl.appendChild(item);
+  });
+  sumProds.textContent=items.length;
+  sumCases.textContent=totalCases;
+}
+
+function removeFromBasket(id){
+  delete basket[id];
+  const card=document.getElementById('pick-'+id);
+  const qtyRow=document.getElementById('qty-row-'+id);
+  const addBtn=document.getElementById('add-'+id);
+  if(card){card.classList.remove('in-basket');qtyRow.style.display='none';addBtn.textContent='+';}
+  updateBasketDisplay();
+  document.getElementById('next-1').disabled=Object.keys(basket).length===0;
+}
+
+// Step navigation
+function goToStep(step){
+  document.getElementById('panel-'+currentStep).classList.remove('active');
+  document.getElementById('panel-'+step).classList.add('active');
+
+  // Update step indicators
+  [1,2,3,4].forEach(s=>{
+    const num=document.getElementById('sn'+s);
+    const lbl=document.getElementById('sl'+s);
+    num.classList.remove('active','done');
+    lbl.classList.remove('active');
+    if(s<step){num.classList.add('done');num.textContent='✓';}
+    else if(s===step){num.classList.add('active');num.textContent=s;lbl.classList.add('active');}
+    else{num.textContent=s;}
+  });
+
+  if(step===4) buildReview();
+  currentStep=step;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function validateStep2(){
+  const required=['f-firstname','f-lastname','f-company','f-jobtitle','f-email','f-phone','f-country','f-biztype'];
+  let valid=true;
+  required.forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('error');
+    if(!el.value.trim()){el.classList.add('error');valid=false;}
+  });
+  if(valid) goToStep(3);
+  else{ const first=document.querySelector('.field input.error,.field select.error'); if(first) first.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+
+function validateStep3(){
+  const required=['f-delcountry','f-delcity','f-deladdress'];
+  let valid=true;
+  required.forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('error');
+    if(!el.value.trim()){el.classList.add('error');valid=false;}
+  });
+  if(valid) goToStep(4);
+}
+
+function selectPay(el){
+  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPay=el.dataset.pay;
+}
+
+function buildReview(){
+  const items=Object.keys(basket);
+  const productLines=items.map(id=>{
+    const p=PRODUCTS.find(x=>x.id==id);
+    return `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid rgba(31,12,4,0.1);">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#1F0C04;">${p.name} <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(31,12,4,0.5);">${p.category}</span></span>
+      <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);">${basket[id].qty} case${basket[id].qty!==1?'s':''}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('review-content').innerHTML=`
+    <div style="background:rgba(237,229,216,0.6);border:0.5px solid rgba(31,12,4,0.12);border-radius:3px;padding:24px 28px;margin-bottom:20px;">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.45);margin-bottom:16px;">Products ordered</div>
+      ${productLines}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+      <div style="background:rgba(237,229,216,0.6);border:0.5px solid rgba(31,12,4,0.12);border-radius:3px;padding:20px 22px;">
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.45);margin-bottom:12px;">Company</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#1F0C04;margin-bottom:3px;">${v('f-firstname')} ${v('f-lastname')}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);">${v('f-company')}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);">${v('f-jobtitle')}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);margin-top:6px;">${v('f-email')}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);">${v('f-phone')}</div>
+      </div>
+      <div style="background:rgba(237,229,216,0.6);border:0.5px solid rgba(31,12,4,0.12);border-radius:3px;padding:20px 22px;">
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.45);margin-bottom:12px;">Delivery</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#1F0C04;margin-bottom:3px;">${v('f-delcity')}, ${v('f-delcountry')}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);">${v('f-deladdress')}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);margin-top:8px;">Payment: <strong>${selectedPay}</strong></div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(31,12,4,0.6);">Currency: ${v('f-currency').split(' ')[0]}</div>
+      </div>
+    </div>
+    ${v('f-notes')?`<div style="background:rgba(237,229,216,0.6);border:0.5px solid rgba(31,12,4,0.12);border-radius:3px;padding:18px 22px;margin-bottom:12px;">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(31,12,4,0.45);margin-bottom:8px;">Notes</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(31,12,4,0.65);line-height:1.7;">${v('f-notes')}</div>
+    </div>`:''}`;
+}
+
+function v(id){ const el=document.getElementById(id); return el?el.value:''; }
+
+function submitOrder(){
+  if(!document.getElementById('terms-check').checked){
+    alert('Please accept the terms and conditions to proceed.');
+    return;
+  }
+  // Generate reference number
+  const ref='MSR-'+Math.floor(100000+Math.random()*900000);
+  document.getElementById('ref-number').textContent=ref;
+
+  // In production: POST to your backend / Resend API here
+  // fetch('/api/order', { method:'POST', body: JSON.stringify(collectFormData()) })
+
+  document.getElementById('success-screen').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function collectFormData(){
+  return {
+    reference: document.getElementById('ref-number').textContent,
+    products: Object.keys(basket).map(id=>({
+      product: PRODUCTS.find(x=>x.id==id),
+      qty: basket[id].qty
+    })),
+    buyer:{
+      firstName:v('f-firstname'), lastName:v('f-lastname'),
+      company:v('f-company'), jobTitle:v('f-jobtitle'),
+      email:v('f-email'), phone:v('f-phone'),
+      country:v('f-country'), bizType:v('f-biztype'),
+      regNumber:v('f-regnumber'), source:v('f-source')
+    },
+    delivery:{
+      country:v('f-delcountry'), city:v('f-delcity'),
+      address:v('f-deladdress'), window:v('f-delwindow')
+    },
+    payment:{ terms:selectedPay, currency:v('f-currency') },
+    notes:v('f-notes')
+  };
+}
+
+// Init
+buildPicker();
+updateBasketDisplay();
+</script>
+</body>
+</html>
